@@ -65,6 +65,18 @@ const layers = [
     position: { x: 0, y: 0 },
     size: { width: width, height: height },
   },
+  {
+    location: `${dir}/bottom lid/`,
+    elements: getElements(`${dir}/bottom lid/`),
+    position: { x: 0, y: 0 },
+    size: { width: width, height: height },
+  },
+  {
+    location: `${dir}/top lid/`,
+    elements: getElements(`${dir}/top lid/`),
+    position: { x: 0, y: 0 },
+    size: { width: width, height: height },
+  },
 ];
 
 module.exports = { layers, width, height };

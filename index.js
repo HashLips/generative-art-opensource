@@ -39,7 +39,7 @@ const drawBackground = () => {
 const addMetadata = (_dna, _edition) => {
   let dateTime = Date.now();
   let tempMetadata = {
-    dna: _dna,
+    dna: _dna.join(""),
     edition: _edition,
     date: dateTime,
     attributes: attributesList,
@@ -76,11 +76,9 @@ const drawElement = (_element) => {
   addAttributes(_element);
 };
 
-const constructLayerToDna = (_dna, _layers) => {
-  let DnaSegment = _dna.toString().match(/.{1,2}/g);
+const constructLayerToDna = (_dna = [], _layers = []) => {
   let mappedDnaToLayers = _layers.map((layer, index) => {
-    let selectedElement =
-      layer.elements[parseInt(DnaSegment[index]) % layer.elements.length];
+    let selectedElement = layer.elements[_dna[index]];
     return {
       location: layer.location,
       position: layer.position,
@@ -92,15 +90,17 @@ const constructLayerToDna = (_dna, _layers) => {
   return mappedDnaToLayers;
 };
 
-const isDnaUnique = (_DnaList = [], _dna) => {
-  let foundDna = _DnaList.find((i) => i === _dna);
+const isDnaUnique = (_DnaList = [], _dna = []) => {
+  let foundDna = _DnaList.find((i) => i.join("") === _dna.join(""));
   return foundDna == undefined ? true : false;
 };
 
-const createDna = (_len) => {
-  let randNum = Math.floor(
-    Number(`1e${_len}`) + Math.random() * Number(`9e${_len}`)
-  );
+const createDna = (_layers) => {
+  let randNum = [];
+  _layers.forEach((layer) => {
+    let num = Math.floor(Math.random() * layer.elements.length);
+    randNum.push(num);
+  });
   return randNum;
 };
 
@@ -114,7 +114,7 @@ const startCreating = async () => {
   while (editionCount <= editionSize) {
     console.log(editionCount);
 
-    let newDna = createDna(layers.length * 2 - 1);
+    let newDna = createDna(layers);
     console.log(dnaList);
     if (isDnaUnique(dnaList, newDna)) {
       let results = constructLayerToDna(newDna, layers);
@@ -125,6 +125,7 @@ const startCreating = async () => {
       });
 
       await Promise.all(loadedElements).then((elementArray) => {
+        ctx.clearRect(0, 0, width, height);
         drawBackground();
         elementArray.forEach((element) => {
           drawElement(element);
