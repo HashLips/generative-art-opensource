@@ -78,9 +78,9 @@ const drawElement = (_element) => {
 
 const constructLayerToDna = (_dna, _layers) => {
   let DnaSegment = _dna.toString().match(/.{1,2}/g);
-  let mappedDnaToLayers = _layers.map((layer) => {
+  let mappedDnaToLayers = _layers.map((layer, index) => {
     let selectedElement =
-      layer.elements[parseInt(DnaSegment) % layer.elements.length];
+      layer.elements[parseInt(DnaSegment[index]) % layer.elements.length];
     return {
       location: layer.location,
       position: layer.position,
@@ -88,6 +88,7 @@ const constructLayerToDna = (_dna, _layers) => {
       selectedElement: selectedElement,
     };
   });
+
   return mappedDnaToLayers;
 };
 
