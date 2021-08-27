@@ -1,11 +1,19 @@
 const fs = require("fs");
-const myArgs = process.argv.slice(2);
 const { createCanvas, loadImage } = require("canvas");
-const { layers, width, height } = require("./input/config.js");
+const {
+  layers,
+  width,
+  height,
+  description,
+  baseImageUri,
+  editionSize,
+  startEditionFrom,
+  endEditionAt,
+  rarityWeights,
+} = require("./input/config.js");
 const console = require("console");
 const canvas = createCanvas(width, height);
 const ctx = canvas.getContext("2d");
-const editionSize = myArgs.length > 0 ? Number(myArgs[0]) : 1;
 var metadataList = [];
 var attributesList = [];
 var dnaList = [];
@@ -40,6 +48,9 @@ const addMetadata = (_dna, _edition) => {
   let dateTime = Date.now();
   let tempMetadata = {
     dna: _dna.join(""),
+    name: `#${_edition}`,
+    description: description,
+    image: `${baseImageUri}/${_edition}`,
     edition: _edition,
     date: dateTime,
     attributes: attributesList,
@@ -58,9 +69,7 @@ const addAttributes = (_element) => {
 
 const loadLayerImg = async (_layer) => {
   return new Promise(async (resolve) => {
-    const image = await loadImage(
-      `${_layer.location}${_layer.selectedElement.fileName}`
-    );
+    const image = await loadImage(`${_layer.selectedElement.path}`);
     resolve({ layer: _layer, loadedImage: image });
   });
 };
@@ -76,9 +85,9 @@ const drawElement = (_element) => {
   addAttributes(_element);
 };
 
-const constructLayerToDna = (_dna = [], _layers = []) => {
+const constructLayerToDna = (_dna = [], _layers = [], _rarity) => {
   let mappedDnaToLayers = _layers.map((layer, index) => {
-    let selectedElement = layer.elements[_dna[index]];
+    let selectedElement = layer.elements[_rarity][_dna[index]];
     return {
       location: layer.location,
       position: layer.position,
@@ -90,15 +99,28 @@ const constructLayerToDna = (_dna = [], _layers = []) => {
   return mappedDnaToLayers;
 };
 
+const getRarity = (_editionCount) => {
+  let rarity = "";
+  rarityWeights.forEach((rarityWeight) => {
+    if (
+      _editionCount >= rarityWeight.from &&
+      _editionCount <= rarityWeight.to
+    ) {
+      rarity = rarityWeight.value;
+    }
+  });
+  return rarity;
+};
+
 const isDnaUnique = (_DnaList = [], _dna = []) => {
   let foundDna = _DnaList.find((i) => i.join("") === _dna.join(""));
   return foundDna == undefined ? true : false;
 };
 
-const createDna = (_layers) => {
+const createDna = (_layers, _rarity) => {
   let randNum = [];
   _layers.forEach((layer) => {
-    let num = Math.floor(Math.random() * layer.elements.length);
+    let num = Math.floor(Math.random() * layer.elements[_rarity].length);
     randNum.push(num);
   });
   return randNum;
@@ -110,14 +132,18 @@ const writeMetaData = (_data) => {
 
 const startCreating = async () => {
   writeMetaData("");
-  let editionCount = 1;
-  while (editionCount <= editionSize) {
+  let editionCount = startEditionFrom;
+  while (editionCount <= endEditionAt) {
     console.log(editionCount);
 
-    let newDna = createDna(layers);
+    let rarity = getRarity(editionCount);
+    console.log(rarity);
+
+    let newDna = createDna(layers, rarity);
     console.log(dnaList);
+
     if (isDnaUnique(dnaList, newDna)) {
-      let results = constructLayerToDna(newDna, layers);
+      let results = constructLayerToDna(newDna, layers, rarity);
       let loadedElements = []; //promise array
 
       results.forEach((layer) => {
