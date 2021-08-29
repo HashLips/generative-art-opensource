@@ -4,12 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Daniel Eugene Botha",
   "license": "ISC",
   "dependencies": {
     "all": "^0.0.0",
     "canvas": "^2.8.0"
+  },
+  "devDependencies": {
+    "jest": "^27.1.0"
   }
 }
