@@ -1,7 +1,6 @@
 const fs = require('fs');
 const { createCanvas, loadImage } = require('canvas');
 const {
-  layers,
   width,
   height,
   description,
@@ -14,9 +13,6 @@ const {
 const console = require('console');
 const canvas = createCanvas(width, height);
 const ctx = canvas.getContext('2d');
-var metadataList = [];
-var attributesList = [];
-var dnaList = [];
 
 const saveImage = (_editionCount) => {
   fs.writeFileSync(
@@ -46,25 +42,23 @@ const drawBackground = () => {
 
 const addMetadata = (_dna, _edition) => {
   let dateTime = Date.now();
-  let tempMetadata = {
+  return {
     dna: _dna.join(''),
     name: `#${_edition}`,
     description: description,
     image: `${baseImageUri}/${_edition}`,
     edition: _edition,
     date: dateTime,
-    attributes: attributesList,
+    attributes: [],
   };
-  metadataList.push(tempMetadata);
-  attributesList = [];
 };
 
-const addAttributes = (_element) => {
+const generateAttribute = (_element) => {
   let selectedElement = _element.layer.selectedElement;
-  attributesList.push({
+  return {
     name: selectedElement.name,
     rarity: selectedElement.rarity,
-  });
+  };
 };
 
 const loadLayerImg = async (_layer) => {
@@ -80,7 +74,6 @@ const drawElement = (_element) => {
     _element.layer.size.width,
     _element.layer.size.height
   );
-  addAttributes(_element);
 };
 
 const constructLayerToDna = (_dna = [], _layers = [], _rarity) => {
@@ -100,8 +93,8 @@ const getRarity = (_editionCount) => {
   );
 };
 
-const isDnaUnique = (_DnaList = [], _dna = []) => {
-  return !_DnaList.find((i) => i.join('') === _dna.join(''));
+const isDnaUnique = (_dnaList = [], _dna = []) => {
+  return !_dnaList.find((i) => i.join('') === _dna.join(''));
 };
 
 const createDna = (_layers, _rarity) => {
@@ -110,11 +103,9 @@ const createDna = (_layers, _rarity) => {
   );
 };
 
-const writeMetaData = (_data) => {
-  fs.writeFileSync('./output/_metadata.json', _data);
-};
-
-const startCreating = async () => {
+const startCreating = async (layers) => {
+  const totalMetadata = [];
+  const dnaList = [];
   let editionCount = startEditionFrom;
   while (editionCount <= endEditionAt) {
     console.log(editionCount);
@@ -127,31 +118,31 @@ const startCreating = async () => {
 
     if (isDnaUnique(dnaList, newDna)) {
       let results = constructLayerToDna(newDna, layers, rarity);
-      let loadedElements = []; //promise array
-
-      results.forEach((layer) => {
-        loadedElements.push(loadLayerImg(layer));
-      });
+      let loadedElements = results.map((layer) => loadLayerImg(layer));
 
       const elementArray = await Promise.all(loadedElements);
 
       ctx.clearRect(0, 0, width, height);
       drawBackground();
-      elementArray.forEach((element) => {
+      const attributes = elementArray.map((element) => {
         drawElement(element);
+        return generateAttribute(element);
       });
       signImage(`#${editionCount}`);
       saveImage(editionCount);
-      addMetadata(newDna, editionCount);
-      console.log(`Created edition: ${editionCount} with DNA: ${newDna}`);
 
+      const metadata = addMetadata(newDna, editionCount);
+      metadata.attributes = attributes;
+      totalMetadata.push(metadata);
+      console.log(`Created edition: ${editionCount} with DNA: ${newDna}`);
       dnaList.push(newDna);
+
       editionCount++;
     } else {
       console.log('DNA exists!');
     }
   }
-  writeMetaData(JSON.stringify(metadataList));
+  return totalMetadata;
 };
 
 module.exports = {
