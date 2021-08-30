@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "build": "tsc &&  node dist/index.js"
+    "build": "tsc && node dist/index.js"
   },
   "author": "Daniel Eugene Botha",
   "license": "ISC",

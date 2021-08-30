@@ -1,6 +1,6 @@
 import { startCreating } from './generate';
 import fs from 'fs';
-import { layers } from './input/config';
+import { layers } from './config';
 
 (async function main() {
   try {

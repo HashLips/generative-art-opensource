@@ -7,9 +7,9 @@ import {
   isDnaUnique,
   createDna,
   DNALayer,
-} from './generate';
+} from '../src/generate';
 import fs from 'fs';
-import { Layer } from './input/config';
+import { Layer } from '../src/config';
 
 jest.mock('fs', () => ({
   writeFileSync: jest.fn(),

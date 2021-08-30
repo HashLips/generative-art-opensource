@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 
 type Element = {
   name: string;
@@ -35,7 +36,8 @@ type RarityWeight = {
 
 const width = 1000;
 const height = 1000;
-const dir = __dirname;
+const dir = path.join(__dirname, '../input/');
+console.log('dir', dir);
 const description = 'This is an NFT made by the coolest generative code.';
 const baseImageUri = 'https://hashlips/nft';
 const startEditionFrom = 1;
@@ -148,5 +150,5 @@ export {
   Layer,
   Position,
   RarityWeight,
-  Rarity
+  Rarity,
 };

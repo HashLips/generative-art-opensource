@@ -13,7 +13,7 @@ import {
   Position,
   Element,
   Rarity,
-} from './input/config';
+} from './config';
 import console from 'console';
 
 type ImageLayer = {
