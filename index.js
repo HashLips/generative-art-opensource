@@ -1,7 +1,6 @@
 const fs = require("fs");
 const { createCanvas, loadImage } = require("canvas");
 const {
-  layers,
   width,
   height,
   description,
@@ -9,7 +8,8 @@ const {
   editionSize,
   startEditionFrom,
   endEditionAt,
-  rarityWeights,
+  races,
+  raceWeights,
 } = require("./input/config.js");
 const console = require("console");
 const canvas = createCanvas(width, height);
@@ -26,8 +26,8 @@ const saveImage = (_editionCount) => {
 };
 
 const signImage = (_sig) => {
-  ctx.fillStyle = "#000000";
-  ctx.font = "bold 30pt Courier";
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "bold 30pt Verdana";
   ctx.textBaseline = "top";
   ctx.textAlign = "left";
   ctx.fillText(_sig, 40, 40);
@@ -62,8 +62,8 @@ const addMetadata = (_dna, _edition) => {
 const addAttributes = (_element) => {
   let selectedElement = _element.layer.selectedElement;
   attributesList.push({
-    name: selectedElement.name,
-    rarity: selectedElement.rarity,
+    trait_type: _element.layer.name,
+    value: selectedElement.name,
   });
 };
 
@@ -85,11 +85,11 @@ const drawElement = (_element) => {
   addAttributes(_element);
 };
 
-const constructLayerToDna = (_dna = [], _layers = [], _rarity) => {
-  let mappedDnaToLayers = _layers.map((layer, index) => {
-    let selectedElement = layer.elements[_rarity][_dna[index]];
+const constructLayerToDna = (_dna = [], _races = [], _race) => {
+  let mappedDnaToLayers = _races[_race].layers.map((layer, index) => {
+    let selectedElement = layer.elements.find((e) => e.id == _dna[index]);
     return {
-      location: layer.location,
+      name: layer.name,
       position: layer.position,
       size: layer.size,
       selectedElement: selectedElement,
@@ -99,17 +99,14 @@ const constructLayerToDna = (_dna = [], _layers = [], _rarity) => {
   return mappedDnaToLayers;
 };
 
-const getRarity = (_editionCount) => {
-  let rarity = "";
-  rarityWeights.forEach((rarityWeight) => {
-    if (
-      _editionCount >= rarityWeight.from &&
-      _editionCount <= rarityWeight.to
-    ) {
-      rarity = rarityWeight.value;
+const getRace = (_editionCount) => {
+  let race = "No Race";
+  raceWeights.forEach((raceWeight) => {
+    if (_editionCount >= raceWeight.from && _editionCount <= raceWeight.to) {
+      race = raceWeight.value;
     }
   });
-  return rarity;
+  return race;
 };
 
 const isDnaUnique = (_DnaList = [], _dna = []) => {
@@ -117,10 +114,16 @@ const isDnaUnique = (_DnaList = [], _dna = []) => {
   return foundDna == undefined ? true : false;
 };
 
-const createDna = (_layers, _rarity) => {
+const createDna = (_races, _race) => {
   let randNum = [];
-  _layers.forEach((layer) => {
-    let num = Math.floor(Math.random() * layer.elements[_rarity].length);
+  _races[_race].layers.forEach((layer) => {
+    let randElementNum = Math.floor(Math.random() * 100);
+    let num = 0;
+    layer.elements.forEach((element) => {
+      if (randElementNum >= 100 - element.weight) {
+        num = element.id;
+      }
+    });
     randNum.push(num);
   });
   return randNum;
@@ -134,32 +137,28 @@ const startCreating = async () => {
   writeMetaData("");
   let editionCount = startEditionFrom;
   while (editionCount <= endEditionAt) {
-    console.log(editionCount);
-
-    let rarity = getRarity(editionCount);
-    console.log(rarity);
-
-    let newDna = createDna(layers, rarity);
-    console.log(dnaList);
+    let race = getRace(editionCount);
+    let newDna = createDna(races, race);
 
     if (isDnaUnique(dnaList, newDna)) {
-      let results = constructLayerToDna(newDna, layers, rarity);
+      let results = constructLayerToDna(newDna, races, race);
       let loadedElements = []; //promise array
-
       results.forEach((layer) => {
         loadedElements.push(loadLayerImg(layer));
       });
 
       await Promise.all(loadedElements).then((elementArray) => {
         ctx.clearRect(0, 0, width, height);
-        drawBackground();
+        // drawBackground();
         elementArray.forEach((element) => {
           drawElement(element);
         });
         signImage(`#${editionCount}`);
         saveImage(editionCount);
         addMetadata(newDna, editionCount);
-        console.log(`Created edition: ${editionCount} with DNA: ${newDna}`);
+        console.log(
+          `Created edition: ${editionCount}, Race: ${race} with DNA: ${newDna}`
+        );
       });
       dnaList.push(newDna);
       editionCount++;
