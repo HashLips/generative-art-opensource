@@ -1,6 +1,6 @@
-const { startCreating } = require('./generate');
-const fs = require('fs');
-const { layers } = require('./input/config');
+import { startCreating } from './generate';
+import fs from 'fs';
+import { layers } from './input/config';
 
 (async function main() {
   try {

@@ -1,4 +1,4 @@
-const {
+import {
   saveImage,
   signImage,
   loadLayerImg,
@@ -6,17 +6,24 @@ const {
   getRarity,
   isDnaUnique,
   createDna,
-} = require('./generate');
-const fs = require('fs');
+  DNALayer,
+} from './generate';
+import fs from 'fs';
+import { Layer } from './input/config';
 
 jest.mock('fs', () => ({
   writeFileSync: jest.fn(),
   readdirSync: () => ['original'],
 }));
 
-var mockToBuffer;
-var mockContext;
-var mockLoadImage;
+var mockToBuffer: jest.Mock<any, any>;
+var mockContext: {
+  fillText: any;
+  clearRect?: jest.Mock<any, any>;
+  fillRect?: jest.Mock<any, any>;
+  drawImage?: jest.Mock<any, any>;
+};
+var mockLoadImage: jest.Mock<any, any>;
 
 jest.mock('canvas', () => {
   mockToBuffer = jest.fn();
@@ -29,7 +36,7 @@ jest.mock('canvas', () => {
   mockLoadImage = jest.fn();
   return {
     createCanvas: () => ({
-      getContext: (_) => mockContext,
+      getContext: (_: any) => mockContext,
       toBuffer: mockToBuffer,
     }),
     loadImage: mockLoadImage,
@@ -37,10 +44,6 @@ jest.mock('canvas', () => {
 });
 
 describe('index.js', () => {
-  // beforeEach(() => {
-  //     // mockContext.
-  // })
-
   describe('saveImage', () => {
     it('should write to file', () => {
       const buffer = 'a buffer';
@@ -74,11 +77,11 @@ describe('index.js', () => {
         selectedElement: {
           path: 'path/here',
         },
-      };
+      } as DNALayer;
 
       const result = await loadLayerImg(layer);
 
-      expect(result).toEqual({ layer: layer, loadedImage: exImage });
+      expect(result).toEqual({ layer: layer, image: exImage });
     });
   });
 
@@ -130,7 +133,7 @@ describe('index.js', () => {
     it('should return empty string if out of bounds edition', () => {
       const result = getRarity(16);
 
-      expect(result).toBeFalsy();
+      expect(result).toEqual('original');
     });
   });
 
@@ -163,16 +166,18 @@ describe('index.js', () => {
   describe('createDna', () => {
     it('should create dna for layer and rarity', () => {
       const rarity = 'original';
-      const layers = [
+      const layers: Layer[] = [
         {
           elements: {
-            original: [{ test: 'obj' }],
+            original: [{ name: 'name', path: 'path/' }],
           },
+          ...({} as any),
         },
         {
           elements: {
             original: [{ test: 'obj2' }, { test: 'obj3' }],
           },
+          ...({} as any),
         },
       ];
 

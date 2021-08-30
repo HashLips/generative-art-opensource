@@ -1,36 +1,70 @@
-const fs = require("fs");
+import fs from 'fs';
+
+type Element = {
+  name: string;
+  path: string;
+};
+
+type Size = {
+  width: number;
+  height: number;
+};
+
+type Position = {
+  x: number;
+  y: number;
+};
+
+type ElementHolder = {
+  [key: string]: Element[];
+};
+
+type Layer = {
+  elements: ElementHolder;
+  position: Position;
+  size: Size;
+};
+
+type Rarity = 'super_rare' | 'rare' | 'original';
+
+type RarityWeight = {
+  value: Rarity;
+  from: number;
+  to: number;
+};
+
 const width = 1000;
 const height = 1000;
 const dir = __dirname;
-const description = "This is an NFT made by the coolest generative code.";
-const baseImageUri = "https://hashlips/nft";
+const description = 'This is an NFT made by the coolest generative code.';
+const baseImageUri = 'https://hashlips/nft';
 const startEditionFrom = 1;
 const endEditionAt = 10;
 const editionSize = 10;
-const rarityWeights = [
+const rarityWeights: RarityWeight[] = [
   {
-    value: "super_rare",
+    value: 'super_rare',
     from: 1,
     to: 1,
   },
   {
-    value: "rare",
+    value: 'rare',
     from: 2,
     to: 5,
   },
   {
-    value: "original",
+    value: 'original',
     from: 5,
     to: editionSize,
   },
 ];
 
-const cleanName = (_str) => {
-  let name = _str.slice(0, -4);
+const cleanName = (str: string) => {
+  let name = str.slice(0, -4);
   return name;
 };
 
-const getElements = (path) => {
+const getElements: (path: string) => Element[] = (path: string) => {
   return fs
     .readdirSync(path)
     .filter((item) => !/(^|\/)\.[^\/\.]/g.test(item))
@@ -42,7 +76,7 @@ const getElements = (path) => {
     });
 };
 
-const layers = [
+const layers: Layer[] = [
   {
     elements: {
       original: getElements(`${dir}/ball/original`),
@@ -99,7 +133,7 @@ const layers = [
   },
 ];
 
-module.exports = {
+export {
   layers,
   width,
   height,
@@ -109,4 +143,10 @@ module.exports = {
   startEditionFrom,
   endEditionAt,
   rarityWeights,
+  Element,
+  Size,
+  Layer,
+  Position,
+  RarityWeight,
+  Rarity
 };
