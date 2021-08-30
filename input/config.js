@@ -5,7 +5,6 @@ const dir = __dirname;
 const description = "This is an NFT made by the coolest generative code.";
 const baseImageUri = "https://hashlips/nft";
 const startEditionFrom = 1;
-const endEditionAt = 10;
 const editionSize = 10;
 const rarityWeights = [
   {
@@ -107,6 +106,5 @@ module.exports = {
   baseImageUri,
   editionSize,
   startEditionFrom,
-  endEditionAt,
   rarityWeights,
 };
