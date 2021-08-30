@@ -9,11 +9,6 @@ const endEditionAt = 50;
 const editionSize = 50;
 const raceWeights = [
   {
-    value: "censored",
-    from: 1,
-    to: 2,
-  },
-  {
     value: "particle",
     from: 3,
     to: 6,
