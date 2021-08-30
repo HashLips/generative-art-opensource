@@ -282,15 +282,9 @@ const races = {
         elements: [
           {
             id: 0,
-            name: "Human",
-            path: `${dir}/5-skin/White.png`,
+            name: "Skull",
+            path: `${dir}/5-skin/Skull.png`,
             weight: 100,
-          },
-          {
-            id: 1,
-            name: "Human",
-            path: `${dir}/5-skin/Black.png`,
-            weight: 50,
           },
         ],
         position: { x: 0, y: 0 },
