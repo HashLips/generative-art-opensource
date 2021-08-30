@@ -8,7 +8,7 @@ Create generative art by using the canvas api and node js, feel free to contribu
 
 # How to use
 ## Run the code
-1. Run `node index.js <number-of-nfts>`
+1. Run `node index.js`
 2. Open the `./output` folder to find your generated images to use as NFTs
 
 ## Adjust the provided configuration and resources
