@@ -133,6 +133,13 @@ const writeMetaData = (_data) => {
   fs.writeFileSync("./output/_metadata.json", _data);
 };
 
+const saveMetaDataSingleFile = (_editionCount) => {
+  fs.writeFileSync(
+    `./output/${_editionCount}.json`,
+    JSON.stringify(metadataList.find((meta) => meta.edition == _editionCount))
+  );
+};
+
 const startCreating = async () => {
   writeMetaData("");
   let editionCount = startEditionFrom;
@@ -156,6 +163,7 @@ const startCreating = async () => {
         signImage(`#${editionCount}`);
         saveImage(editionCount);
         addMetadata(newDna, editionCount);
+        saveMetaDataSingleFile(editionCount);
         console.log(
           `Created edition: ${editionCount}, Race: ${race} with DNA: ${newDna}`
         );
