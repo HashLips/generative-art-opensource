@@ -120,7 +120,7 @@ const getRarity = _editionCount => {
 const isDnaUnique = (_DnaList = [], _dna = []) => {
   const foundDna = _DnaList.find((i) => i.join("") === _dna.join(""));
 
-  return foundDna == undefined ? true : false;
+  return foundDna === undefined;
 };
 
 const createDna = (_layers, _rarity) => {
