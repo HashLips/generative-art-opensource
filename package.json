@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "build": "tsc && node dist/index.js"
+    "build": "tsc && node dist/index.js",
+    "build:mappings": "tsc && node dist/createAssetMappings.js"
   },
   "author": "Daniel Eugene Botha",
   "license": "ISC",
@@ -13,11 +14,13 @@
     "@types/node": "^16.7.6",
     "all": "^0.0.0",
     "canvas": "^2.8.0",
+    "lodash": "^4.17.21",
     "ts-node": "^10.2.1",
     "typescript": "^4.4.2"
   },
   "devDependencies": {
     "@types/jest": "^27.0.1",
+    "@types/lodash": "^4.14.172",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.2",
