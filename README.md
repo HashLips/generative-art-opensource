@@ -45,7 +45,7 @@ const layersOrder = [
 ];
 ```
 
-Then optionally, update your `format` size, ie the outputted image size, and the editionSize, which is the amount of variation outputted.
+Then optionally, update your `format` size, ie the outputted image size, and the `editionSize`, which is the amount of variation outputted.
 
 When your are all ready, run the following command and your outputted art will be in the `build` directory:
 
