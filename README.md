@@ -2,7 +2,7 @@
 
 Create generative art by using the canvas api and node js
 
-![](https://github.com/HashLips/generative-art-opensource/blob/master/src/preview.png)
+![](https://github.com/HashLips/generative-art-opensource/blob/main/src/preview.png)
 
 ## Installation
 
