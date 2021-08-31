@@ -5,8 +5,7 @@ const {
     format,
     description,
     baseImageUri,
-    startEditionFrom,
-    endEditionAt,
+    edition,
     rarityWeights
 } = require("./config.js");
 const console = require("console");
@@ -71,10 +70,12 @@ const addAttributes = (_element) => {
 };
 
 const loadLayerImg = async (_layer) => {
-  return new Promise(async (resolve) => {
     const image = await loadImage(`${_layer.selectedElement.path}`);
-    resolve({ layer: _layer, loadedImage: image });
-  });
+    
+    return {
+        layer: _layer,
+        loadedImage: image
+    }
 };
 
 const drawElement = (_element) => {
@@ -155,7 +156,7 @@ const cleanName = (_str) => {
   const getElements = (path) => {
     return fs
       .readdirSync(path)
-      .filter((item) => !/(^|\/)\.[^\/\.]/g.test(item))
+      .filter((item) => !/(^|\/)\.[^/.]/g.test(item))
       .map((i) => {
         return {
           name: cleanName(i),
@@ -165,7 +166,7 @@ const cleanName = (_str) => {
 };
 
 const layersSetup = layersOrder => {
-    const layers = layersOrder.map((layer, index) => ({
+    const layers = layersOrder.map((layer) => ({
       elements: {
         original: getElements(`${layersDir}/${layer}/original`),
         rare: getElements(`${layersDir}/${layer}/rare`),
@@ -182,8 +183,8 @@ const startCreating = async () => {
     const layers = layersSetup(layersOrder);
 
     buildSetup();
-    let editionCount = startEditionFrom;
-    while (editionCount <= endEditionAt) {
+    let editionCount = edition.start;
+    while (editionCount <= edition.end) {
         console.log(editionCount);
 
         let rarity = getRarity(editionCount);
