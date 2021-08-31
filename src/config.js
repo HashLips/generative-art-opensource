@@ -1,13 +1,6 @@
 const description = "This is an NFT made by the coolest generative code.";
 const baseImageUri = "https://hashlips/nft";
-// const startEditionFrom = 1;
-// const endEditionAt = 10;
-// const editionSize = 10;
-const edition = {
-  start: 1,
-  end: 10,
-  size: 10
-}
+const editionSize = 10;
 const format = {
   width: 1000,
   height: 1000
@@ -26,10 +19,9 @@ const rarityWeights = [
   {
     value: "original",
     from: 5,
-    to: edition.size,
+    to: editionSize,
   },
 ];
-
 const layersOrder = [
   'ball',
   'eye color',
@@ -45,6 +37,6 @@ module.exports = {
   format,
   description,
   baseImageUri,
-  edition,
+  editionSize,
   rarityWeights,
 };

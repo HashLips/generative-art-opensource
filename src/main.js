@@ -5,7 +5,7 @@ const {
     format,
     description,
     baseImageUri,
-    edition,
+    editionSize,
     rarityWeights
 } = require("./config.js");
 const console = require("console");
@@ -20,14 +20,14 @@ let metadataList = [];
 let attributesList = [];
 let dnaList = [];
 
-const saveImage = (_editionCount) => {
+const saveImage = _editionCount => {
   fs.writeFileSync(
     `${buildDir}/${_editionCount}.png`,
     canvas.toBuffer("image/png")
   );
 };
 
-const signImage = (_sig) => {
+const signImage = _sig => {
   ctx.fillStyle = "#000000";
   ctx.font = "bold 30pt Courier";
   ctx.textBaseline = "top";
@@ -38,6 +38,7 @@ const signImage = (_sig) => {
 const genColor = () => {
   let hue = Math.floor(Math.random() * 360);
   let pastel = `hsl(${hue}, 100%, 85%)`;
+
   return pastel;
 };
 
@@ -61,7 +62,7 @@ const addMetadata = (_dna, _edition) => {
   attributesList = [];
 };
 
-const addAttributes = (_element) => {
+const addAttributes = _element => {
   let selectedElement = _element.layer.selectedElement;
   attributesList.push({
     name: selectedElement.name,
@@ -69,16 +70,15 @@ const addAttributes = (_element) => {
   });
 };
 
-const loadLayerImg = async (_layer) => {
-    const image = await loadImage(`${_layer.selectedElement.path}`);
-    
-    return {
-        layer: _layer,
-        loadedImage: image
-    }
+const loadLayerImg = async _layer => {
+    return new Promise(async (resolve) => {
+        const image = await loadImage(_layer.selectedElement.path);
+
+        resolve({ layer: _layer, loadedImage: image });
+    });
 };
 
-const drawElement = (_element) => {
+const drawElement = _element => {
   ctx.drawImage(
     _element.loadedImage,
     _element.layer.position.x,
@@ -103,7 +103,7 @@ const constructLayerToDna = (_dna = [], _layers = [], _rarity) => {
   return mappedDnaToLayers;
 };
 
-const getRarity = (_editionCount) => {
+const getRarity = _editionCount => {
   let rarity = "";
   rarityWeights.forEach((rarityWeight) => {
     if (
@@ -113,11 +113,13 @@ const getRarity = (_editionCount) => {
       rarity = rarityWeight.value;
     }
   });
+
   return rarity;
 };
 
 const isDnaUnique = (_DnaList = [], _dna = []) => {
-  let foundDna = _DnaList.find((i) => i.join("") === _dna.join(""));
+  const foundDna = _DnaList.find((i) => i.join("") === _dna.join(""));
+
   return foundDna == undefined ? true : false;
 };
 
@@ -127,6 +129,7 @@ const createDna = (_layers, _rarity) => {
     let num = Math.floor(Math.random() * layer.elements[_rarity].length);
     randNum.push(num);
   });
+
   return randNum;
 };
 
@@ -137,7 +140,7 @@ const buildSetup = () => {
     fs.mkdirSync(buildDir);
 };
 
-const writeMetaData = (data) => {
+const writeMetaData = data => {
     fs.stat(`${buildDir}/${metDataFile}`, (err) => {
       if(err == null || err.code === 'ENOENT') {
         fs.writeFileSync(`${buildDir}/${metDataFile}`, data);
@@ -147,13 +150,13 @@ const writeMetaData = (data) => {
     });
 };
 
-const cleanName = (_str) => {
+const cleanName = _str => {
     let name = _str.slice(0, -4);
 
     return name;
-  };
+};
   
-  const getElements = (path) => {
+const getElements = path => {
     return fs
       .readdirSync(path)
       .filter((item) => !/(^|\/)\.[^/.]/g.test(item))
@@ -162,7 +165,7 @@ const cleanName = (_str) => {
           name: cleanName(i),
           path: `${path}/${i}`,
         };
-      });
+    });
 };
 
 const layersSetup = layersOrder => {
@@ -183,8 +186,8 @@ const startCreating = async () => {
     const layers = layersSetup(layersOrder);
 
     buildSetup();
-    let editionCount = edition.start;
-    while (editionCount <= edition.end) {
+    let editionCount = 1;
+    while (editionCount <= editionSize) {
         console.log(editionCount);
 
         let rarity = getRarity(editionCount);
@@ -197,7 +200,7 @@ const startCreating = async () => {
             let results = constructLayerToDna(newDna, layers, rarity);
             let loadedElements = []; //promise array
 
-            results.forEach((layer) => {
+            results.forEach(async (layer) => {
                 loadedElements.push(loadLayerImg(layer));
             });
 
@@ -205,7 +208,7 @@ const startCreating = async () => {
                 ctx.clearRect(0, 0, format.width, format.height);
                 drawBackground();
                 elementArray.forEach((element) => {
-                drawElement(element);
+                    drawElement(element);
                 });
                 signImage(`#${editionCount}`);
                 saveImage(editionCount);
