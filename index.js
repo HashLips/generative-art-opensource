@@ -50,7 +50,7 @@ const addMetadata = (_dna, _edition) => {
     dna: _dna.join(""),
     name: `#${_edition}`,
     description: description,
-    image: `${baseImageUri}/${_edition}`,
+    image: `${baseImageUri}/${_edition}.png`,
     edition: _edition,
     date: dateTime,
     attributes: attributesList,
