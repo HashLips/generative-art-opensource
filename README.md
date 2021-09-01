@@ -32,5 +32,9 @@ To start, copy the layers/features and their images in a flat hierarchy at a dir
 
 After adding the `layers`, adjust them accordingly in the `config.js` by providing the directory path, positioning and sizes.
 
+### Allowing different rarities for certain rarity/layer combinations
+It is possible to provide a percentage at which e.g. a rare item would contain a rare vs. common part in a given layer. This can be done via the `addRarityPercentForLayer` that can be found in the `config.js` as well. 
+This allows for more fine grained control over how much randomness there should be during the generation process, and allows a combination of common and rare parts.
+
 # Development suggestions
 - Preferably use VSCode with the prettifier plugin for a consistent coding style (or equivalent js formatting rules)
