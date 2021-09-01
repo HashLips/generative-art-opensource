@@ -21,6 +21,7 @@ The file `./input/config.js` contains the following properties that can be adjus
 - baseImageUri: - URL base to access your NFTs from. This will be used by platforms to find your image resource. This expects the image to be accessible by it's id like `${baseImageUri}/${id}`.
 - startEditionFrom: - number (int) to start naming NFTs from. Default: `1`
 - editionSize: - number (int) to end edition at. Default: `10`
+- editionDnaPrefix: - value (number or string) that indicates which dna from an edition is used there. I.e. dna `0` from to independent batches in the same edition may differ, and can be differentiated using this. Default: `0`
 - rarityWeights: - allows to provide rarity categories and how many of each type to include in an edition. Default: `1 super_rare, 4 rare, 5 original`
 - layers: list of layers that should be used to render the image. See next section for detail.
 
