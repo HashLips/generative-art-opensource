@@ -32,6 +32,7 @@ To ensure uniqueness, we want to add various features and multiple options for e
 To start, copy the layers/features and their images in a flat hierarchy at a directory of your choice (by default we expect them in `./input/`). The features should contain options for each rarity that is provided via the config file.
 
 After adding the `layers`, adjust them accordingly in the `config.js` by providing the directory path, positioning and sizes.
+Use the existing `addLayers` calls as guidance for how to add layers. This can either only use the name of the layer and will use default positioning (x=0, y=0) and sizes (width=configured width, height=configure height), or positioning and sizes can be provided for more flexibility.
 
 ### Allowing different rarities for certain rarity/layer combinations
 It is possible to provide a percentage at which e.g. a rare item would contain a rare vs. common part in a given layer. This can be done via the `addRarityPercentForLayer` that can be found in the `config.js` as well. 

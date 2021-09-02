@@ -142,7 +142,7 @@ let rarityWeights = [
 // for each layer, call 'addLayer' with the id and optionally the positioning and size
 // the id would be the name of the folder in your input directory, e.g. 'ball' for ./input/ball
 const layers = [
-  addLayer('ball'),
+  addLayer('ball', { x: 0, y: 0 }, { width: width, height: height }),
   addLayer('eye color'),
   addLayer('iris'),
   addLayer('shine'),
