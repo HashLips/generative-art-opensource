@@ -92,7 +92,7 @@ const drawElement = (_element) => {
 // drawing on a canvas
 const constructLayerToDna = (_dna = [], _layers = [], _rarity) => {
   let mappedDnaToLayers = _layers.map((layer, index) => {
-    let selectedElement = layer.elements[_rarity][_dna[index]];
+    let selectedElement = layer.elements.find(element => element.id === _dna[index]);
     return {
       location: layer.location,
       position: layer.position,
@@ -100,7 +100,6 @@ const constructLayerToDna = (_dna = [], _layers = [], _rarity) => {
       selectedElement: selectedElement,
     };
   });
-
   return mappedDnaToLayers;
 };
 
@@ -111,13 +110,35 @@ const isDnaUnique = (_DnaList = [], _dna = []) => {
   return foundDna == undefined ? true : false;
 };
 
+const getRandomRarity = (_rarityOptions) => {
+  let randomPercent = Math.random() * 100;
+  let percentCount = 0;
+
+  for (let i = 0; i <= _rarityOptions.length; i++) {
+    percentCount += _rarityOptions[i].percent;
+    if (percentCount >= randomPercent) {
+      console.log(`use random rarity ${_rarityOptions[i].id}`)
+      return _rarityOptions[i].id;
+    }
+  }
+  return _rarityOptions[0].id;
+}
+
 // create a dna based on the available layers for the given rarity
 // use a random part for each layer
 const createDna = (_layers, _rarity) => {
   let randNum = [];
+  let _rarityWeight = rarityWeights.find(rw => rw.value === _rarity);
   _layers.forEach((layer) => {
-    let num = Math.floor(Math.random() * layer.elements[_rarity].length);
-    randNum.push(num);
+    let num = Math.floor(Math.random() * layer.elementIdsForRarity[_rarity].length);
+    if (_rarityWeight && _rarityWeight.layerPercent[layer.id]) {
+      // if there is a layerPercent defined, we want to identify which dna to actually use here (instead of only picking from the same rarity)
+      let _rarityForLayer = getRandomRarity(_rarityWeight.layerPercent[layer.id]);
+      num = Math.floor(Math.random() * layer.elementIdsForRarity[_rarityForLayer].length);
+      randNum.push(layer.elementIdsForRarity[_rarityForLayer][num]);
+    } else {
+      randNum.push(layer.elementIdsForRarity[_rarity][num]);
+    }
   });
   return randNum;
 };
