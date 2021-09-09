@@ -97,7 +97,7 @@ const constructLayerToDna = (_dna = [], _layers = [], _rarity) => {
       location: layer.location,
       position: layer.position,
       size: layer.size,
-      selectedElement: selectedElement,
+      selectedElement: {...selectedElement, rarity: _rarity },
     };
   });
   return mappedDnaToLayers;
