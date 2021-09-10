@@ -159,8 +159,24 @@ const getRarity = (_editionCount) => {
   return rarityForEdition[editionSize - _editionCount];
 };
 
-const writeMetaData = (_data) => {
-  fs.writeFileSync("./output/_metadata.json", _data);
+const clearMetaData = (_data) => {
+  fs.stat('./output/*', function(err, stats) {
+    console.log(stats);
+
+    if (err) {
+      return console.error(err);
+    }
+
+    fs.unlink('./output/*', function(err){
+      if (err) return console.log(err);
+      console.log('file deleted successfully');
+    });
+  });
+};
+
+const writeMetaData = async (_data) => {
+  const fileName = `./output/${JSON.parse(_data).edition}.json`;
+  await fs.writeFileSync(fileName, _data);
 };
 
 // holds which dna has already been used during generation
@@ -178,7 +194,7 @@ const startCreating = async () => {
   console.log('start creating NFTs.')
 
   // clear meta data from previous run
-  writeMetaData("");
+  clearMetaData("");
 
   // prepare dnaList object
   rarityWeights.forEach((rarityWeight) => {
@@ -234,7 +250,8 @@ const startCreating = async () => {
       // write the image to the output directory
       saveImage(editionCount);
       let nftMetadata = generateMetadata(newDna, editionCount, attributesList);
-      metadataList.push(nftMetadata)
+      writeMetaData(JSON.stringify(nftMetadata));
+//      metadataList.push(nftMetadata)
       console.log('- metadata: ' + JSON.stringify(nftMetadata));
       console.log('- edition ' + editionCount + ' created.');
       console.log();

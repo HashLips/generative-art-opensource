@@ -119,23 +119,23 @@ const width = 1000;
 // image height in pixels
 const height = 1000;
 // description for NFT in metadata file
-const description = "This is an NFT made by the coolest generative code.";
+const description = "RAF NFTs ROCK!!!";
 // base url to use in metadata file
 // the id of the nft will be added to this url, in the example e.g. https://hashlips/nft/1 for NFT with id 1
-const baseImageUri = "https://hashlips/nft";
+const baseImageUri = "https://rafnft.art/";
 // id for edition to start from
 const startEditionFrom = 1;
 // amount of NFTs to generate in edition
-const editionSize = 10;
+const editionSize = 20;
 // prefix to add to edition dna ids (to distinguish dna counts from different generation processes for the same collection)
 const editionDnaPrefix = 0
 
 // create required weights
 // for each weight, call 'addRarity' with the id and from which to which element this rarity should be applied
 let rarityWeights = [
-  addRarity('super_rare', 1, 1),
-  addRarity('rare', 2, 5),
-  addRarity('original', 5, 10)
+  addRarity('super_rare', 1, 15),
+  addRarity('rare', 16, 30),
+  addRarity('original', 31, 100)
 ];
 
 // create required layers
