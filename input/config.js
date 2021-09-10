@@ -122,20 +122,20 @@ const height = 1000;
 const description = "RAF NFTs ROCK!!!";
 // base url to use in metadata file
 // the id of the nft will be added to this url, in the example e.g. https://hashlips/nft/1 for NFT with id 1
-const baseImageUri = "https://rafnft.art/";
+const baseImageUri = "";
 // id for edition to start from
 const startEditionFrom = 1;
 // amount of NFTs to generate in edition
-const editionSize = 20;
+const editionSize = 100;
 // prefix to add to edition dna ids (to distinguish dna counts from different generation processes for the same collection)
 const editionDnaPrefix = 0
 
 // create required weights
 // for each weight, call 'addRarity' with the id and from which to which element this rarity should be applied
 let rarityWeights = [
-  addRarity('super_rare', 1, 15),
-  addRarity('rare', 16, 30),
-  addRarity('original', 31, 100)
+  addRarity('super_rare', 1, 5),
+  addRarity('rare', 6, 15),
+  addRarity('original', 16, 100)
 ];
 
 // create required layers
@@ -154,7 +154,23 @@ const layers = [
 // all provided options are used based on their percentage values to decide which layer to select from
 addRarityPercentForLayer('super_rare', 'ball', { 'super_rare': 33, 'rare': 33, 'original': 33 });
 addRarityPercentForLayer('super_rare', 'eye color', { 'super_rare': 50, 'rare': 25, 'original': 25 });
+addRarityPercentForLayer('super_rare', 'iris', {'super_rare': 2, 'rare':17, 'original': 81});
+addRarityPercentForLayer('super_rare', 'shine', {'super_rare': 33, 'rare': 33, 'original': 33});
+addRarityPercentForLayer('super_rare', 'bottom lid', {'super_rare': 33, 'rare': 33, 'original': 33});
+addRarityPercentForLayer('super_rare', 'top lid', {'super_rare': 33, 'rare': 33, 'original': 33});
+addRarityPercentForLayer('original', 'ball', { 'super_rare': 33, 'rare': 33, 'original': 33 });
 addRarityPercentForLayer('original', 'eye color', { 'super_rare': 50, 'rare': 25, 'original': 25 });
+addRarityPercentForLayer('original', 'iris', {'super_rare': 2, 'rare':17, 'original': 81});
+addRarityPercentForLayer('original', 'shine', {'super_rare': 33, 'rare': 33, 'original': 33});
+addRarityPercentForLayer('original', 'bottom lid', {'super_rare': 33, 'rare': 33, 'original': 33});
+addRarityPercentForLayer('original', 'top lid', {'super_rare': 33, 'rare': 33, 'original': 33});
+addRarityPercentForLayer('rare', 'ball', { 'super_rare': 33, 'rare': 33, 'original': 33 });
+addRarityPercentForLayer('rare', 'eye color', { 'super_rare': 50, 'rare': 25, 'original': 25 });
+addRarityPercentForLayer('rare', 'iris', {'super_rare': 2, 'rare':17, 'original': 81});
+addRarityPercentForLayer('rare', 'shine', {'super_rare': 33, 'rare': 33, 'original': 33});
+addRarityPercentForLayer('rare', 'bottom lid', {'super_rare': 33, 'rare': 33, 'original': 33});
+addRarityPercentForLayer('rare', 'top lid', {'super_rare': 33, 'rare': 33, 'original': 33});
+
 
 module.exports = {
   layers,

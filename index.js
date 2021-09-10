@@ -11,8 +11,11 @@ const {
   rarityWeights,
 } = require("./input/config.js");
 const console = require("console");
+const { getSystemErrorMap } = require("util");
+const { getLineAndCharacterOfPosition } = require("typescript");
 const canvas = createCanvas(width, height);
 const ctx = canvas.getContext("2d");
+const wallet_addr = `AtYzzearnfy2UYgmT3pAhKzzLNwr8phT16ede3A1F1rZ`;
 
 // saves the generated image to the output folder, using the edition count as the name
 const saveImage = (_editionCount) => {
@@ -47,13 +50,37 @@ const drawBackground = () => {
 const generateMetadata = (_dna, _edition, _attributesList) => {
   let dateTime = Date.now();
   let tempMetadata = {
-    dna: _dna.join(""),
-    name: `#${_edition}`,
-    description: description,
-    image: `${baseImageUri}/${_edition}`,
-    edition: _edition,
-    date: dateTime,
-    attributes: _attributesList,
+    name: `${_edition}`,
+    symbol: "RAFTEST1",
+    seller_fee_basis_points: 0,
+    image: "image.png",
+    properties: {
+      files: [
+        {
+          uri: "image.png",
+          type: `image/png`,
+        }
+      ],
+      category: `image`,
+      creators: [
+        {  
+          address: new anchor.web3.PublicKey(wallet_addr),
+          verified: false,
+          share: 100
+        }
+      ],
+      dna: _dna.join(""),
+      collection: {
+        name: "Kodama",
+        family: "RAF"
+      },
+      description: description,
+      edition: _edition,
+      date: dateTime,
+      animation_url: ``,
+      external_url: ``,
+      attributes: _attributesList,
+    },
   };
   return tempMetadata;
 };
@@ -114,9 +141,13 @@ const getRandomRarity = (_rarityOptions) => {
   let randomPercent = Math.random() * 100;
   let percentCount = 0;
 
-  for (let i = 0; i <= _rarityOptions.length; i++) {
-    percentCount += _rarityOptions[i].percent;
-    if (percentCount >= randomPercent) {
+  for (let i = 0; i < _rarityOptions.length; i++) {
+    try {
+        percentCount += _rarityOptions[i].percent;
+    } catch (err) {
+      console.error(err);
+    }
+        if (percentCount >= randomPercent) {
       console.log(`use random rarity ${_rarityOptions[i].id}`)
       return _rarityOptions[i].id;
     }
