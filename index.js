@@ -20,7 +20,7 @@ const wallet_addr = `AtYzzearnfy2UYgmT3pAhKzzLNwr8phT16ede3A1F1rZ`;
 // saves the generated image to the output folder, using the edition count as the name
 const saveImage = (_editionCount) => {
   fs.writeFileSync(
-    `./output/${_editionCount}.png`,
+    `./output/${_editionCount - 1}.png`,
     canvas.toBuffer("image/png")
   );
 };
@@ -50,37 +50,35 @@ const drawBackground = () => {
 const generateMetadata = (_dna, _edition, _attributesList) => {
   let dateTime = Date.now();
   let tempMetadata = {
-    name: `${_edition}`,
-    symbol: "RAFTEST1",
+    name: `${_edition - 1}`,
+    symbol: "",
+    description: description,
     seller_fee_basis_points: 0,
     image: "image.png",
+    animation_url: "",
+    external_url: "",
+    uri:`${_edition - 1}.png`,
+    attributes: _attributesList,
+    collection: {
+      name: "Kodama",
+      family: "RAF"
+    },
     properties: {
       files: [
         {
           uri: "image.png",
-          type: `image/png`,
+          type: "image/png",
         }
       ],
-      category: `image`,
+      category: "image",
       creators: [
         {  
-          address: new anchor.web3.PublicKey(wallet_addr),
+          address: wallet_addr,
           verified: false,
           share: 100
         }
-      ],
-      dna: _dna.join(""),
-      collection: {
-        name: "Kodama",
-        family: "RAF"
-      },
-      description: description,
-      edition: _edition,
-      date: dateTime,
-      animation_url: ``,
-      external_url: ``,
-      attributes: _attributesList,
-    },
+      ]
+    }
   };
   return tempMetadata;
 };
@@ -206,7 +204,7 @@ const clearMetaData = (_data) => {
 };
 
 const writeMetaData = async (_data) => {
-  const fileName = `./output/${JSON.parse(_data).edition}.json`;
+  const fileName = `./output/${JSON.parse(_data).name}.json`;
   await fs.writeFileSync(fileName, _data);
 };
 
