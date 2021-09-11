@@ -164,7 +164,7 @@ const writeMetaData = (_data) => {
 };
 
 // holds which dna has already been used during generation
-let dnaListByRarity = {};
+let dnaListByRarity = [];
 // holds metadata for all NFTs
 let metadataList = [];
 // Create generative art by using the canvas api
@@ -181,9 +181,9 @@ const startCreating = async () => {
   writeMetaData("");
 
   // prepare dnaList object
-  rarityWeights.forEach((rarityWeight) => {
-    dnaListByRarity[rarityWeight.value] = [];
-  });
+  // rarityWeights.forEach((rarityWeight) => {
+  //   dnaListByRarity[rarityWeight.value] = [];
+  // });
 
   // create NFTs from startEditionFrom to editionSize
   let editionCount = startEditionFrom;
@@ -198,7 +198,7 @@ const startCreating = async () => {
     // calculate the NFT dna by getting a random part for each layer/feature 
     // based on the ones available for the given rarity to use during generation
     let newDna = createDna(layers, rarity);
-    while (!isDnaUnique(dnaListByRarity[rarity], newDna)) {
+    while (!isDnaUnique(dnaListByRarity, newDna)) {
       // recalculate dna as this has been used before.
       console.log('found duplicate DNA ' + newDna.join('-') + ', recalculate...');
       newDna = createDna(layers, rarity);
@@ -239,7 +239,7 @@ const startCreating = async () => {
       console.log('- edition ' + editionCount + ' created.');
       console.log();
     });
-    dnaListByRarity[rarity].push(newDna);
+    dnaListByRarity.push(newDna);
     editionCount++;
   }
   writeMetaData(JSON.stringify(metadataList));
