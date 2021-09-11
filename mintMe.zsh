@@ -4,8 +4,12 @@ metaplex upload ./output --url https://api.devnet.solana.com --keypair dev-walle
 pause
 metaplex verify
 pause
-metaplex create_candy_machine -k dev-wallet.json -p 0.666
+metaplex create_candy_machine -k kodama-wallet.json -p 0.666 -env mainnet-beta
 pause
-metaplex set_start_date -k dev-wallet.json -d "10 Sep 2021 00:00:00 GMT"
+metaplex set_start_date -k kodama-wallet.json -d "10 Sep 2021 00:00:00 GMT" -env mainnet-beta
 pause
-for x (1 2 3 4 5 6 7 8); do metaplex mint_one_token -k dev-wallet.json; done
+for x in {1..20}; do metaplex mint_one_token -k kodama-wallet.json -env mainnet-beta; done
+
+Candy Machine is BQEZ1iX8wFE3EWN5DcsHJN33EraEdEju3SHu9fKxSy5r
+
+93vVEKaBeJC79pi7g1S2wkfHPU5cFG2Ua1tbgzTzNbqi

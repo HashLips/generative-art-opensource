@@ -15,7 +15,7 @@ const { getSystemErrorMap } = require("util");
 const { getLineAndCharacterOfPosition } = require("typescript");
 const canvas = createCanvas(width, height);
 const ctx = canvas.getContext("2d");
-const wallet_addr = `AtYzzearnfy2UYgmT3pAhKzzLNwr8phT16ede3A1F1rZ`;
+const wallet_addr = `4dR8XYPgWy4ysCGs2mpAjjHEAuxu85qpQEhMiyqPus9c`;
 
 // saves the generated image to the output folder, using the edition count as the name
 const saveImage = (_editionCount) => {
@@ -243,12 +243,12 @@ const startCreating = async () => {
     // calculate the NFT dna by getting a random part for each layer/feature 
     // based on the ones available for the given rarity to use during generation
     let newDna = createDna(layers, rarity);
-    while (!isDnaUnique(dnaListByRarity[rarity], newDna)) {
+  /*  while (!isDnaUnique(dnaListByRarity[rarity], newDna)) {
       // recalculate dna as this has been used before.
       console.log('found duplicate DNA ' + newDna.join('-') + ', recalculate...');
       newDna = createDna(layers, rarity);
     }
-    console.log('- dna: ' + newDna.join('-'));
+  */  console.log('- dna: ' + newDna.join('-'));
 
     // propagate information about required layer contained within config into a mapping object
     // = prepare for drawing
