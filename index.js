@@ -64,6 +64,7 @@ const getAttributeForElement = (_element) => {
   let attribute = {
     name: selectedElement.name,
     rarity: selectedElement.rarity,
+    trait_type: selectedElement.trait_type
   };
   return attribute;
 };
@@ -97,7 +98,7 @@ const constructLayerToDna = (_dna = [], _layers = [], _rarity) => {
       location: layer.location,
       position: layer.position,
       size: layer.size,
-      selectedElement: {...selectedElement, rarity: _rarity },
+      selectedElement: {...selectedElement, rarity: _rarity, trait_type: layer.id },
     };
   });
   return mappedDnaToLayers;
