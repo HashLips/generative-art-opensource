@@ -102,3 +102,9 @@ dist
 
 # TernJS port file
 .tern-port
+
+# DO NOT UPLOAD WALLETS TO GITHUB
+.dev-wallet.json
+
+#DO NOT UPLOAD NFTS TO GITHUB
+/outbox

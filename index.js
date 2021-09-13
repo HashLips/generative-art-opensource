@@ -1,4 +1,4 @@
-const fs = require("fs");
+lsconst fs = require("fs");
 const { createCanvas, loadImage } = require("canvas");
 const {
   layers,
