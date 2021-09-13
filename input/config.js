@@ -4,184 +4,66 @@
  *************************************************************/
 const fs = require("fs");
 const dir = __dirname;
-
-// adds a rarity to the configuration. This is expected to correspond with a directory containing the rarity for each defined layer
-// @param _id - id of the rarity
-// @param _from - number in the edition to start this rarity from
-// @param _to - number in the edition to generate this rarity to
-// @return a rarity object used to dynamically generate the NFTs
-const addRarity = (_id, _from, _to) => {
-  const _rarityWeight = {
-    value: _id,
-    from: _from,
-    to: _to,
-    layerPercent: {}
-  };
-  return _rarityWeight;
+const max_items = 1000;
+const max_layers = 10; //Maximum number of layers for the project
+//Rarity definitions.  Represents the chance of 
+//pulling from this specific folder 
+const rarity_types = { 
+  1: "08_unique",
+  5: "07_extra_legendary",
+  15: "06_legendary",
+  20: "05_extra_rare",
+  25: "04_rare",
+  45: "03_extra_special",
+  50: "02_special",
+  90: "01_common"
 };
 
-// get the name without last 4 characters -> slice .png from the name
-const cleanName = (_str) => {
-  let name = _str.slice(0, -4);
-  return name;
-};
-
-// reads the filenames of a given folder and returns it with its name and path
-const getElements = (_path, _elementCount) => {
-  return fs
-    .readdirSync(_path)
-    .filter((item) => !/(^|\/)\.[^\/\.]/g.test(item))
-    .map((i) => {
-      return {
-        id: _elementCount,
-        name: cleanName(i),
-        path: `${_path}/${i}`
-      };
-    });
-};
-
-// adds a layer to the configuration. The layer will hold information on all the defined parts and 
-// where they should be rendered in the image
-// @param _id - id of the layer
-// @param _position - on which x/y value to render this part
-// @param _size - of the image
-// @return a layer object used to dynamically generate the NFTs
-const addLayer = (_id, _position, _size) => {
-  if (!_id) {
-    console.log('error adding layer, parameters id required');
-    return null;
-  }
-  if (!_position) {
-    _position = { x: 0, y: 0 };
-  }
-  if (!_size) {
-    _size = { width: width, height: height }
-  }
-  // add two different dimension for elements:
-  // - all elements with their path information
-  // - only the ids mapped to their rarity
-  let elements = [];
-  let elementCount = 0;
-  let elementIdsForRarity = {};
-  rarityWeights.forEach((rarityWeight) => {
-    let elementsForRarity = getElements(`${dir}/${_id}/${rarityWeight.value}`);
-
-    elementIdsForRarity[rarityWeight.value] = [];
-    elementsForRarity.forEach((_elementForRarity) => {
-      _elementForRarity.id = `${editionDnaPrefix}${elementCount}`;
-      elements.push(_elementForRarity);
-      elementIdsForRarity[rarityWeight.value].push(_elementForRarity.id);
-      elementCount++;
-    })
-    elements[rarityWeight.value] = elementsForRarity;
-  });
-
-  let elementsForLayer = {
-    id: _id,
-    position: _position,
-    size: _size,
-    elements,
-    elementIdsForRarity
-  };
-  return elementsForLayer;
-};
-
-// adds layer-specific percentages to use one vs another rarity
-// @param _rarityId - the id of the rarity to specifiy
-// @param _layerId - the id of the layer to specifiy
-// @param _percentages - an object defining the rarities and the percentage with which a given rarity for this layer should be used
-const addRarityPercentForLayer = (_rarityId, _layerId, _percentages) => {
-  let _rarityFound = false;
-  rarityWeights.forEach((_rarityWeight) => {
-    if (_rarityWeight.value === _rarityId) {
-      let _percentArray = [];
-      for (let percentType in _percentages) {
-        _percentArray.push({
-          id: percentType,
-          percent: _percentages[percentType]
-        })
+const newAddLayers = (max_items) => {
+  const allDNA = [];
+  const itemDNA = [];
+  //TODO: Get a background
+  for (let item = 0; item < max_items; item++) {
+    //Get the random number for this layer
+    for (let currLayer = 0; currLayer < max_layers; currLayer++) {
+      let layerSelected = false;
+      console.log(`Calculating layer ${currLayer} for edition ${item}`);
+      let randSeed = Math.floor(Math.random() * 100);
+    //Get the layer by rarity folder name
+      const numRarityTypes = Object.keys(rarity_types).length;
+      for (let rarityType = 0; rarityType < numRarityTypes; rarityType++) {
+        if (!layerSelected) {
+            console.log(`Calculating rarity for this layer`);
+            const rarityValues = Object.keys(rarity_types);
+            let selectedRarityValue = parseInt(rarityValues[rarityType]);
+        //If the rarity is above the current type, then select it.
+            if (!layerSelected && selectedRarityValue >= randSeed) {
+              const thisNFT = {
+                "layer": currLayer == 0 ? 'background' : `layer${currLayer}`,
+                "rarity": rarity_types[selectedRarityValue],
+              }
+              console.log(`Go get ${JSON.stringify(thisNFT)} and add it to _dna`);
+              itemDNA.push({...thisNFT});
+              layerSelected = true;
+        //make sure it ends when one is pushed.
+            }  
+          }
+        }
       }
-      _rarityWeight.layerPercent[_layerId] = _percentArray;
-      _rarityFound = true;
-    }
-  });
-  if (!_rarityFound) {
-    console.log(`rarity ${_rarityId} not found, failed to add percentage information`);
+      console.log(`This item's DNA is ${itemDNA}`);
+      allDNA.push({itemId: item, dna: {itemDNA}});
   }
+  return allDNA;
 }
 
-/**************************************************************
- * BEGIN CONFIG
- *************************************************************/
-
-// image width in pixels
-const width = 1000;
-// image height in pixels
-const height = 1000;
-// description for NFT in metadata file
-const description = "Owning one of these guarantees you a random drop of the minted collection, all more individual and more artistic than any others before them.  Learn more about the project by visiting this link https://kodamanft.art/";
-// base url to use in metadata file
-// the id of the nft will be added to this url, in the example e.g. https://hashlips/nft/1 for NFT with id 1
-const baseImageUri = "";
-// id for edition to start from
-const startEditionFrom = 1;
-// amount of NFTs to generate in edition
-const editionSize = 1000;
-// prefix to add to edition dna ids (to distinguish dna counts from different generation processes for the same collection)
-const editionDnaPrefix = 0
-
-// create required weights
-// for each weight, call 'addRarity' with the id and from which to which element this rarity should be applied
-let rarityWeights = [
-  addRarity('super_rare', 1, 5),
-  addRarity('rare', 6, 15),
-  addRarity('original', 16, 1000)
-];
-
-// create required layers
-// for each layer, call 'addLayer' with the id and optionally the positioning and size
-// the id would be the name of the folder in your input directory, e.g. 'ball' for ./input/ball
-const layers = [
-  addLayer('ball', { x: 0, y: 0 }, { width: width, height: height }),
-  addLayer('eye color'),
-  addLayer('iris'),
-  addLayer('shine'),
-  addLayer('bottom lid'),
-  addLayer('top lid')
- //addLayer('kodama')
-];
-
-// provide any specific percentages that are required for a given layer and rarity level
-// all provided options are used based on their percentage values to decide which layer to select from
-//addRarityPercentForLayer('original', 'kodama', { 'original': 100});
-
-addRarityPercentForLayer('super_rare', 'ball', { 'super_rare': 33, 'rare': 33, 'original': 33 });
-addRarityPercentForLayer('super_rare', 'eye color', { 'super_rare': 50, 'rare': 25, 'original': 25 });
-addRarityPercentForLayer('super_rare', 'iris', {'super_rare': 2, 'rare':17, 'original': 81});
-addRarityPercentForLayer('super_rare', 'shine', {'super_rare': 33, 'rare': 33, 'original': 33});
-addRarityPercentForLayer('super_rare', 'bottom lid', {'super_rare': 33, 'rare': 33, 'original': 33});
-addRarityPercentForLayer('super_rare', 'top lid', {'super_rare': 33, 'rare': 33, 'original': 33});
-addRarityPercentForLayer('original', 'ball', { 'super_rare': 33, 'rare': 33, 'original': 33 });
-addRarityPercentForLayer('original', 'eye color', { 'super_rare': 50, 'rare': 25, 'original': 25 });
-addRarityPercentForLayer('original', 'iris', {'super_rare': 2, 'rare':17, 'original': 81});
-addRarityPercentForLayer('original', 'shine', {'super_rare': 33, 'rare': 33, 'original': 33});
-addRarityPercentForLayer('original', 'bottom lid', {'super_rare': 33, 'rare': 33, 'original': 33});
-addRarityPercentForLayer('original', 'top lid', {'super_rare': 33, 'rare': 33, 'original': 33});
-addRarityPercentForLayer('rare', 'ball', { 'super_rare': 33, 'rare': 33, 'original': 33 });
-addRarityPercentForLayer('rare', 'eye color', { 'super_rare': 50, 'rare': 25, 'original': 25 });
-addRarityPercentForLayer('rare', 'iris', {'super_rare': 2, 'rare':17, 'original': 81});
-addRarityPercentForLayer('rare', 'shine', {'super_rare': 33, 'rare': 33, 'original': 33});
-addRarityPercentForLayer('rare', 'bottom lid', {'super_rare': 33, 'rare': 33, 'original': 33});
-addRarityPercentForLayer('rare', 'top lid', {'super_rare': 33, 'rare': 33, 'original': 33});
-
-
 module.exports = {
-  layers,
-  width,
-  height,
-  description,
-  baseImageUri,
-  editionSize,
-  startEditionFrom,
-  rarityWeights,
+  //layers,
+  //width,
+  //height,
+  //description,
+  //baseImageUri,
+  //editionSize,
+  //startEditionFrom,
+  //rarityWeights,
+  newAddLayers
 };
