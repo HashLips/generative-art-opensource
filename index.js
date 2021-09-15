@@ -41,7 +41,7 @@ const generateMetadata = (_dna, _edition) => {
     animation_url: "",
     external_url: "",
     uri:`${_edition}.png`,
-    attributes: [],
+    attributes: [{dna: _dna.dnaId}],
     createdDate: dateTime,
     collection: {
       name: "Kodama",
@@ -65,8 +65,8 @@ const generateMetadata = (_dna, _edition) => {
     }
   };
   fs.writeFileSync(
-    `./output/${_editionCount}.json`,
-    tempMetadata
+    `./output/${_edition}.json`,
+    JSON.stringify(tempMetadata)
   );
   return tempMetadata;
 };
@@ -83,6 +83,21 @@ const drawBackground = () => {
   ctx.fillRect(0, 0, width, height);
 };
 
+const clearOutput = () => {
+  fs.stat('./output/*', function(err, stats) {
+    console.log(stats);
+
+    if (err) {
+      return console.error(err);
+    }
+
+    fs.unlink('./output/*', function(err){
+      if (err) return console.log(err);
+      console.log('file deleted successfully');
+    });
+  });
+};
+
 const startCreating = async () => {
 
   console.log('##################');
@@ -91,7 +106,8 @@ const startCreating = async () => {
   console.log('##################');
 
   console.log('Begin creating NFTs at Date.now()')
-
+  
+  clearOutput();
   const allDNA = addLayers(editionCount);
 
   const allItems = allDNA.allDNA;
@@ -111,7 +127,7 @@ const startCreating = async () => {
       ctx.drawImage(imgFile, 0, 0, width, height);
     }
     const dnaID = allDNA.allDNA[idx].dnaId;
-    signImage(allDNA.allDNAIds[idx]);
+    //signImage(allDNA.allDNAIds[idx]);
     //Save the file to the file system.
     saveImage(idx);
     generateMetadata(allDNA.allDNA[idx], idx);
