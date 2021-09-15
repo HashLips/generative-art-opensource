@@ -4,9 +4,10 @@
  *************************************************************/
 
 const fs = require("fs");
+const editionCount = 100;
 const width = 800;
 const height = 800;
-const dir = __dirname;
+const description = 'Get your Kodamas here';
 const max_layers = 8; //Maximum number of layers for the project
 //Rarity definitions.  Represents the chance of 
 //pulling from this specific folder 
@@ -32,7 +33,7 @@ const compileStatistics = (stats, layer, selectedRarity, calculatedRarityPct) =>
   return stats.push(layerRarities);
 };
 
-const newAddLayers = (max_items) => {
+const addLayers = (max_items) => {
   const allDNA = [];
   const itemDNA = [];
   let stats = [];
@@ -116,10 +117,11 @@ module.exports = {
   //layers,
   width,
   height,
-  //description,
+  editionCount,
+  description,
   //baseImageUri,
   //editionSize,
   //startEditionFrom,
   //rarityWeights,
-  newAddLayers
+  addLayers
 };
