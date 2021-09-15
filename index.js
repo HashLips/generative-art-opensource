@@ -1,4 +1,4 @@
-lsconst fs = require("fs");
+const fs = require("fs");
 const { createCanvas, loadImage } = require("canvas");
 const {
   layers,
@@ -9,6 +9,7 @@ const {
   editionSize,
   startEditionFrom,
   rarityWeights,
+  newAddLayers
 } = require("./input/config.js");
 const console = require("console");
 const { getSystemErrorMap } = require("util");
@@ -222,6 +223,11 @@ const startCreating = async () => {
   console.log();
   console.log('start creating NFTs.')
 
+  const allDNA = newAddLayers(1000);
+  console.log(JSON.stringify(allDNA));
+}
+
+const startCreatingOld = async () => {
   // clear meta data from previous run
   clearMetaData("");
 
@@ -291,5 +297,5 @@ const startCreating = async () => {
   writeMetaData(JSON.stringify(metadataList));
 };
 
-// Initiate code
+// Initiate creation
 startCreating();
