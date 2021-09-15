@@ -1,19 +1,14 @@
 const fs = require("fs");
 const { createCanvas, loadImage } = require("canvas");
 const {
-  layers,
   width,
   height,
   description,
-  baseImageUri,
   editionSize,
   startEditionFrom,
-  rarityWeights,
   newAddLayers
 } = require("./input/config.js");
 const console = require("console");
-const { getSystemErrorMap } = require("util");
-const { getLineAndCharacterOfPosition } = require("typescript");
 const canvas = createCanvas(width, height);
 const ctx = canvas.getContext("2d");
 const wallet_addr = `4dR8XYPgWy4ysCGs2mpAjjHEAuxu85qpQEhMiyqPus9c`;
@@ -21,18 +16,9 @@ const wallet_addr = `4dR8XYPgWy4ysCGs2mpAjjHEAuxu85qpQEhMiyqPus9c`;
 // saves the generated image to the output folder, using the edition count as the name
 const saveImage = (_editionCount) => {
   fs.writeFileSync(
-    `./output/${_editionCount - 1}.png`,
+    `./output/${_editionCount}.png`,
     canvas.toBuffer("image/png")
   );
-};
-
-// adds a signature to the top left corner of the canvas
-const signImage = (_sig) => {
-  ctx.fillStyle = "#000000";
-  ctx.font = "bold 30pt Courier";
-  ctx.textBaseline = "top";
-  ctx.textAlign = "left";
-  ctx.fillText(_sig, 40, 40);
 };
 
 // generate a random color hue
@@ -47,62 +33,6 @@ const drawBackground = () => {
   ctx.fillRect(0, 0, width, height);
 };
 
-// add metadata for individual nft edition
-const generateMetadata = (_dna, _edition, _attributesList) => {
-  let dateTime = Date.now();
-  let tempMetadata = {
-    name: `${_edition - 1}`,
-    symbol: "",
-    description: description,
-    seller_fee_basis_points: 0,
-    image: "image.png",
-    animation_url: "",
-    external_url: "",
-    uri:`${_edition - 1}.png`,
-    attributes: _attributesList,
-    collection: {
-      name: "Kodama",
-      family: "RAF"
-    },
-    properties: {
-      files: [
-        {
-          uri: "image.png",
-          type: "image/png",
-        }
-      ],
-      category: "image",
-      creators: [
-        {  
-          address: wallet_addr,
-          verified: false,
-          share: 100
-        }
-      ]
-    }
-  };
-  return tempMetadata;
-};
-
-// prepare attributes for the given element to be used as metadata
-const getAttributeForElement = (_element) => {
-  let selectedElement = _element.layer.selectedElement;
-  let attribute = {
-    name: selectedElement.name,
-    rarity: selectedElement.rarity,
-  };
-  return attribute;
-};
-
-// loads an image from the layer path
-// returns the image in a format usable by canvas
-const loadLayerImg = async (_layer) => {
-  return new Promise(async (resolve) => {
-    const image = await loadImage(`${_layer.selectedElement.path}`);
-    resolve({ layer: _layer, loadedImage: image });
-  });
-};
-
 const drawElement = (_element) => {
   ctx.drawImage(
     _element.loadedImage,
@@ -113,108 +43,8 @@ const drawElement = (_element) => {
   );
 };
 
-// check the configured layer to find information required for rendering the layer
-// this maps the layer information to the generated dna and prepares it for
-// drawing on a canvas
-const constructLayerToDna = (_dna = [], _layers = [], _rarity) => {
-  let mappedDnaToLayers = _layers.map((layer, index) => {
-    let selectedElement = layer.elements.find(element => element.id === _dna[index]);
-    return {
-      location: layer.location,
-      position: layer.position,
-      size: layer.size,
-      selectedElement: {...selectedElement, rarity: _rarity },
-    };
-  });
-  return mappedDnaToLayers;
-};
-
-// check if the given dna is contained within the given dnaList 
-// return true if it is, indicating that this dna is already in use and should be recalculated
-const isDnaUnique = (_DnaList = [], _dna = []) => {
-  let foundDna = _DnaList.find((i) => i.join("") === _dna.join(""));
-  return foundDna == undefined ? true : false;
-};
-
-const getRandomRarity = (_rarityOptions) => {
-  let randomPercent = Math.random() * 100;
-  let percentCount = 0;
-
-  for (let i = 0; i < _rarityOptions.length; i++) {
-    try {
-        percentCount += _rarityOptions[i].percent;
-    } catch (err) {
-      console.error(err);
-    }
-        if (percentCount >= randomPercent) {
-      console.log(`use random rarity ${_rarityOptions[i].id}`)
-      return _rarityOptions[i].id;
-    }
-  }
-  return _rarityOptions[0].id;
-}
-
-// create a dna based on the available layers for the given rarity
-// use a random part for each layer
-const createDna = (_layers, _rarity) => {
-  let randNum = [];
-  let _rarityWeight = rarityWeights.find(rw => rw.value === _rarity);
-  _layers.forEach((layer) => {
-    let num = Math.floor(Math.random() * layer.elementIdsForRarity[_rarity].length);
-    if (_rarityWeight && _rarityWeight.layerPercent[layer.id]) {
-      // if there is a layerPercent defined, we want to identify which dna to actually use here (instead of only picking from the same rarity)
-      let _rarityForLayer = getRandomRarity(_rarityWeight.layerPercent[layer.id]);
-      num = Math.floor(Math.random() * layer.elementIdsForRarity[_rarityForLayer].length);
-      randNum.push(layer.elementIdsForRarity[_rarityForLayer][num]);
-    } else {
-      randNum.push(layer.elementIdsForRarity[_rarity][num]);
-    }
-  });
-  return randNum;
-};
-
-// holds which rarity should be used for which image in edition
-let rarityForEdition;
-// get the rarity for the image by edition number that should be generated
-const getRarity = (_editionCount) => {
-  if (!rarityForEdition) {
-    // prepare array to iterate over
-    rarityForEdition = [];
-    rarityWeights.forEach((rarityWeight) => {
-      for (let i = rarityWeight.from; i <= rarityWeight.to; i++) {
-        rarityForEdition.push(rarityWeight.value);
-      }
-    });
-  }
-  return rarityForEdition[editionSize - _editionCount];
-};
-
-const clearMetaData = (_data) => {
-  fs.stat('./output/*', function(err, stats) {
-    console.log(stats);
-
-    if (err) {
-      return console.error(err);
-    }
-
-    fs.unlink('./output/*', function(err){
-      if (err) return console.log(err);
-      console.log('file deleted successfully');
-    });
-  });
-};
-
-const writeMetaData = async (_data) => {
-  const fileName = `./output/${JSON.parse(_data).name}.json`;
-  await fs.writeFileSync(fileName, _data);
-};
-
-// holds which dna has already been used during generation
-let dnaListByRarity = {};
-// holds metadata for all NFTs
-let metadataList = [];
-// Create generative art by using the canvas api
 const startCreating = async () => {
+
   console.log('##################');
   console.log('# Generative Art');
   console.log('# - Create your NFT collection');
@@ -223,18 +53,35 @@ const startCreating = async () => {
   console.log();
   console.log('start creating NFTs.')
 
-  const allDNA = newAddLayers(1000);
-  console.log(JSON.stringify(allDNA));
+  const allDNA = newAddLayers(100);
+  console.log(`DNA Created`);
+  const allItems = allDNA.allDNA;
+ 
+  for (let idx = 0; idx < allItems.length; idx++) {
+    let loadedElements = [];
+    console.log(`----------->Item Number ${idx}<-----------`);
+    
+    let currDna = allItems[idx].dna;
+
+    ctx.clearRect(0, 0, width, height);
+    drawBackground();
+
+    for (let layerNum = 0; layerNum < Object.keys(currDna).length; layerNum++) {
+     
+      let fileURI = currDna[layerNum].fileURI;
+      const imgFile = await loadImage(fileURI);
+      console.log(imgFile.height, imgFile.width);
+      ctx.drawImage(imgFile, 0, 0, width, height);
+    }
+    
+    saveImage(idx);
+
+  }
 }
 
 const startCreatingOld = async () => {
   // clear meta data from previous run
   clearMetaData("");
-
-  // prepare dnaList object
-  rarityWeights.forEach((rarityWeight) => {
-    dnaListByRarity[rarityWeight.value] = [];
-  });
 
   // create NFTs from startEditionFrom to editionSize
   let editionCount = startEditionFrom;

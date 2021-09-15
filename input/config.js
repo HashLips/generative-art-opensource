@@ -2,10 +2,11 @@
  * UTILITY FUNCTIONS
  * - scroll to BEGIN CONFIG to provide the config values
  *************************************************************/
-const { Console } = require("console");
+
 const fs = require("fs");
+const width = 800;
+const height = 800;
 const dir = __dirname;
-const max_items = 100;
 const max_layers = 8; //Maximum number of layers for the project
 //Rarity definitions.  Represents the chance of 
 //pulling from this specific folder 
@@ -53,7 +54,6 @@ const newAddLayers = (max_items) => {
       const numRarityTypes = Object.keys(rarity_types).length;
       for (let rarityType = 0; rarityType <= numRarityTypes; rarityType++) {
         if (!layerSelected) {
-          console.log(`Calculating rarity for this layer`);
           const rarityValues = Object.keys(rarity_types);
           let selectedRarityValue = parseInt(rarityValues[rarityType]);
           //If the rarity is above the current type, then select it.
@@ -68,8 +68,6 @@ const newAddLayers = (max_items) => {
             if (fileList.length != 0) {
                 let fileindex = Math.floor(Math.random() * fileList.length);
                 thisNFT.fileURI = `${thisNFT.fileLocation}/${fileList[fileindex]}`;
-                console.log(JSON.stringify(fileList));
-                console.log(JSON.stringify(thisNFT.fileURI));
                 if (fs.existsSync(thisNFT.fileURI)) {
                   itemDNA.push({
                     layer: thisNFT.layer,
@@ -106,7 +104,7 @@ const newAddLayers = (max_items) => {
          console.log(err);
        }
     } else {
-      console.log('This DNA already exists: ${dnaValue}');
+      console.log(`This DNA already exists: ${dnaValue}`);
       item = item - 1;
     } 
   }
@@ -116,8 +114,8 @@ const newAddLayers = (max_items) => {
 
 module.exports = {
   //layers,
-  //width,
-  //height,
+  width,
+  height,
   //description,
   //baseImageUri,
   //editionSize,
