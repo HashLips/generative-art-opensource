@@ -3,17 +3,22 @@
 const fs = require('fs');
 const {
   layers,
-  editionSize
+  editionSize,
+  startEditionFrom
 } = require("./input/config.js");
+
+let collectionSize = editionSize - startEditionFrom + 1;
 
 let rarityChart = [];
 
 // initialize rarity chart
 layers.forEach((layer) => {
 	let elementsList = [];
+
 	let rarityForLayer = {
 		traits: elementsList
 	};
+
 	for(let i = 0; i < layer.elements.length; i++)
 	{
 		elementsList = {
@@ -54,15 +59,15 @@ data.forEach((element) => {
 for (const [layer, traits] of Object.entries(rarityChart)) {
 	for (const [trait, value] of Object.entries(traits)) {
 		for (const [key, val] of Object.entries(value)) {
-			val.percentage = (val.percentage / editionSize) * 100
+			val.percentage = (val.percentage / collectionSize) * 100;
 		}
 	}
 }
 
 // print out rarity data to console
 for (const [layer, traits] of Object.entries(rarityChart)) {
-	console.log(`Layer: ${layer}`)
+	console.log(`Layer: ${layer}`);
 	for (const [trait, value] of Object.entries(traits)) {
-		console.log(value)
+		console.log(value);
 	}
 }
