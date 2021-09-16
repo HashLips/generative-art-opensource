@@ -4,13 +4,13 @@
  *************************************************************/
 
 const fs = require("fs");
-const editionCount = 100;
+const editionCount = process.argv[2];
 const width = 800;
 const height = 800;
-const description = 'Get your Kodamas here';
+const description = 'Owning one of these guarantees you a random drop of the minted collection, all more individual and more artistic than any others before them.  Learn more about the project by visiting the link below https://kodamanft.art/';
 const max_layers = 8; //Maximum number of layers for the project
-//Rarity definitions.  Represents the chance of 
-//pulling from this specific folder 
+
+//Rarity definitions.  Represents the chance of pulling from this specific folder 
 const rarity_types = {
   1: "08_unique",
   5: "07_extra_legendary",

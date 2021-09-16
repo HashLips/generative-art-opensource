@@ -10,7 +10,7 @@ const {
 const console = require("console");
 const canvas = createCanvas(width, height);
 const ctx = canvas.getContext("2d");
-const wallet_addr = `4dR8XYPgWy4ysCGs2mpAjjHEAuxu85qpQEhMiyqPus9c`;
+const wallet_addr = `64afd2ZPL9VUnivd95VDv1FoonUGjnMDhW3YRUANFyRQ`;
 
 // saves the generated image to the output folder, using the edition count as the name
 const saveImage = (_editionCount) => {
@@ -31,17 +31,22 @@ const signImage = (_sig) => {
 // add metadata for individual nft edition
 const generateMetadata = (_dna, _edition) => {
   console.log(JSON.stringify(_dna));
-  let dateTime = Date.now();
+  let dateTime = new Date(); 
   let tempMetadata = {
     name: `${_edition}`,
-    symbol: "",
+    symbol: "KODAMA",
     description: description,
     seller_fee_basis_points: 0,
     image: "image.png",
     animation_url: "",
     external_url: "",
     uri:`${_edition}.png`,
-    attributes: [{dna: _dna.dnaId}],
+    attributes: [
+      {
+        "trait_type":  "DNA",
+        "value":  _dna.dnaId
+      }
+    ],
     createdDate: dateTime,
     collection: {
       name: "Kodama",
@@ -58,7 +63,7 @@ const generateMetadata = (_dna, _edition) => {
       creators: [
         {  
           address: wallet_addr,
-          verified: false,
+          verified: true,
           share: 100
         }
       ]
@@ -82,7 +87,7 @@ const drawBackground = () => {
   ctx.fillStyle = genColor();
   ctx.fillRect(0, 0, width, height);
 };
-
+/*
 const clearOutput = () => {
   fs.stat('./output/*', function(err, stats) {
     console.log(stats);
@@ -97,23 +102,29 @@ const clearOutput = () => {
     });
   });
 };
-
+*/
 const startCreating = async () => {
+  let currentdate = new Date(); 
+  const startdatetime = (currentdate.getMonth()+1)  + "/" 
+  + currentdate.getDate() + "/"
+  + currentdate.getFullYear() + " @ "  
+  + currentdate.getHours() + ":"  
+  + currentdate.getMinutes() + ":" 
+  + currentdate.getSeconds();
 
   console.log('##################');
   console.log('# Generative Art');
   console.log('# - Create your NFT collection');
   console.log('##################');
 
-  console.log('Begin creating NFTs at Date.now()')
+  console.log(`Begin creating NFTs at ${startdatetime}}`);
   
-  clearOutput();
+  //clearOutput();
   const allDNA = addLayers(editionCount);
 
   const allItems = allDNA.allDNA;
  
   for (let idx = 0; idx < allItems.length; idx++) {
-    let loadedElements = [];
     console.log(`----------->Item Number ${idx}<-----------`);
     
     let currDna = allItems[idx].dna;
@@ -131,8 +142,16 @@ const startCreating = async () => {
     //Save the file to the file system.
     saveImage(idx);
     generateMetadata(allDNA.allDNA[idx], idx);
-
   }
+  currentdate = new Date(); 
+  const endDateTime = (currentdate.getMonth()+1)  + "/" 
+  + currentdate.getDate() + "/"
+  + currentdate.getFullYear() + " @ "  
+  + currentdate.getHours() + ":"  
+  + currentdate.getMinutes() + ":" 
+  + currentdate.getSeconds();
+  console.log(`Generator finished at ${endDateTime}`);
+
 }
 // Initiate creation
 startCreating();
