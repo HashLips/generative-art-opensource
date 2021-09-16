@@ -18,15 +18,13 @@ layers.forEach((layer) => {
 	{
 		elementsList = {
 			value : layer.elements[i].name,
-			occurence : 0,
+			percentage : 0,
 		};
 		rarityForLayer.traits.push(elementsList);
 	}
 
 	rarityChart[layer.id] = rarityForLayer;
 });
-
-console.log(rarityChart)
 
 // read metadata data
 let rawdata = fs.readFileSync('./output/_metadata.json');
@@ -37,21 +35,15 @@ data.forEach((element) => {
 
 	for(let i = 0; i < element.attributes.length; i++)
 	{
-		let traitType = element.attributes[i].name;
-		let value = element.attributes[i].value;
-
-		console.log(element)
-		console.log(element.attributes.length)
-		console.log(element.attributes)
-		console.log(traitType)
-		console.log(rarityChart[traitType])
+		let traitType = element.attributes[i].trait_type;
+		let value = element.attributes[i].name;
 
 		let rarityChartTrait = rarityChart[traitType];
 
 		for (let i = 0; i < rarityChartTrait.traits.length; i++)
 		{
 			if (rarityChartTrait.traits[i].value == value){
-				rarityChartTrait.traits[i].occurence++;
+				rarityChartTrait.traits[i].percentage++;
 			}
 		}
 	}
@@ -62,7 +54,7 @@ data.forEach((element) => {
 for (const [layer, traits] of Object.entries(rarityChart)) {
 	for (const [trait, value] of Object.entries(traits)) {
 		for (const [key, val] of Object.entries(value)) {
-			val.occurence = (val.occurence / NUM_OF_EDITIONS) * 100
+			val.percentage = (val.percentage / editionSize) * 100
 		}
 	}
 }
