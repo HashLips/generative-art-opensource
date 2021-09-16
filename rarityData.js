@@ -30,7 +30,7 @@ layers.forEach((layer) => {
 let rawdata = fs.readFileSync('./output/_metadata.json');
 let data = JSON.parse(rawdata);
 
-// fill up rarity chart with occurences from metadata
+// fill up rarity chart with occurrences from metadata
 data.forEach((element) => {
 
 	for(let i = 0; i < element.attributes.length; i++)
@@ -50,7 +50,7 @@ data.forEach((element) => {
 
 });
 
-// iterate through rarity list and convert the occurences to percentages
+// iterate through rarity list and convert the occurrences to percentages
 for (const [layer, traits] of Object.entries(rarityChart)) {
 	for (const [trait, value] of Object.entries(traits)) {
 		for (const [key, val] of Object.entries(value)) {
