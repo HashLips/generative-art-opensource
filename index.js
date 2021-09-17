@@ -5,12 +5,32 @@ const {
   height,
   editionCount,
   description,
+  traitDefinition,
   addLayers
 } = require("./input/config.js");
 const console = require("console");
 const canvas = createCanvas(width, height);
 const ctx = canvas.getContext("2d");
-const wallet_addr = `64afd2ZPL9VUnivd95VDv1FoonUGjnMDhW3YRUANFyRQ`;
+
+// Descriptions of these can be viewed at
+// https://medium.com/metaplex/metaplex-metadata-standard-45af3d04b541
+const MPMD_name = `KODAMA${_edition}`;
+const MMPD_symbol = 'KODAMA';
+const MMPD_description = description; 
+const MPMD_seller_fee_basis_points = 0; //if you want royalties, put in a percentage value here.  500 = 5%
+const MPMD_image = 'image.png';         // URL to the image - default to image.png for arweave
+const MPMD_animation_url = 'image.png'; // URL to the animated image - default to image.png for arweave
+const MPMD_external_url = 'image.png';  // URL to an external file - default to image.png for arweave
+const MPMD_uri = `${_edition}.png`;     // THE URL - this needs to resolve to the image file in output folder
+const MPMD_creators = [{
+  address: `64afd2ZPL9VUnivd95VDv1FoonUGjnMDhW3YRUANFyRQ`,
+  verified: true,
+  share: 100
+}];
+
+const MPMD_update_authority = `64afd2ZPL9VUnivd95VDv1FoonUGjnMDhW3YRUANFyRQ`;       //public key of the metadata owner  YOUR WALLET GOES HERE
+// const MPMD_primary_sale_happened = ;  //
+
 
 // saves the generated image to the output folder, using the edition count as the name
 const saveImage = (_editionCount) => {
@@ -20,6 +40,7 @@ const saveImage = (_editionCount) => {
   );
 };
 
+// adds a watermark to the image.  Fun, but no need really.
 const signImage = (_sig) => {
   ctx.fillStyle = "#000000";
   ctx.font = "bold 8pt Courier";
@@ -33,14 +54,14 @@ const generateMetadata = (_dna, _edition) => {
   console.log(JSON.stringify(_dna));
   let dateTime = new Date(); 
   let tempMetadata = {
-    name: `${_edition}`,
-    symbol: "KODAMA",
-    description: description,
-    seller_fee_basis_points: 0,
-    image: "image.png",
-    animation_url: "",
-    external_url: "",
-    uri:`${_edition}.png`,
+    name: MPMD_name,
+    symbol: MMPD_symbol,
+    description: MMPD_description,
+    seller_fee_basis_points: MPMD_seller_fee_basis_points,
+    image: MPMD_image,
+    animation_url: MPMD_animation_url,
+    external_url: MPMD_external_url,
+    uri: MPMD_uri,
     attributes: [
       {
         "trait_type":  "DNA",
@@ -87,22 +108,7 @@ const drawBackground = () => {
   ctx.fillStyle = genColor();
   ctx.fillRect(0, 0, width, height);
 };
-/*
-const clearOutput = () => {
-  fs.stat('./output/*', function(err, stats) {
-    console.log(stats);
 
-    if (err) {
-      return console.error(err);
-    }
-
-    fs.unlink('./output/*', function(err){
-      if (err) return console.log(err);
-      console.log('file deleted successfully');
-    });
-  });
-};
-*/
 const startCreating = async () => {
   let currentdate = new Date(); 
   const startdatetime = (currentdate.getMonth()+1)  + "/" 
@@ -142,7 +148,9 @@ const startCreating = async () => {
     //Save the file to the file system.
     saveImage(idx);
     generateMetadata(allDNA.allDNA[idx], idx);
+    fs.writeFileSync('./input/masterDNA.json',JSON.stringify({'DNAList': allDNA.allDNAIds}));
   }
+
   currentdate = new Date(); 
   const endDateTime = (currentdate.getMonth()+1)  + "/" 
   + currentdate.getDate() + "/"

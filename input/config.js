@@ -3,6 +3,15 @@
  * - scroll to BEGIN CONFIG to provide the config values
  *************************************************************/
 
+
+/* **
+ * Command Line Params
+* 
+*    editionCount argv[2]: Number of individual NFTs to create
+*    treasuryWallet argv[3]: Wallet that will own the NFT
+*/
+
+
 const fs = require("fs");
 const editionCount = process.argv[2];
 const width = 800;
@@ -22,24 +31,29 @@ const rarity_types = {
   100: "01_common"
 };
 
-const layerRarities = [];
+const layer_names = {
+  1: "background",
+  2: "bodystyle1",
+  3: "bodystyle2",
+  4: "bodystyle3",
+  5: "bodystyle4",
+  6: "mouth",
+  7: "eyes",
+  8: "symbol"
+}
 
-const compileStatistics = (stats, layer, selectedRarity, calculatedRarityPct) => {
-  //TODO: figure out how to store layer and calculatedRarityPct
-  console.log(`Layer is: ${layer}`);
-  console.log(`RarityPct is: ${calculatedRarityPct}`);
-
-  layerRarities[selectedRarity] = layerRarities[selectedRarity] + 1;
-  return stats.push(layerRarities);
-};
+const traitDefinition = {
+  "trait_type": "",
+  "value": ""
+}
+const layerTraits = [];
 
 const addLayers = (max_items) => {
   const allDNA = [];
   const itemDNA = [];
   let stats = [];
-  const allDNAIds = [];
-
-
+  const allDNAIds = JSON.parse(fs.readFileSync('./input/masterDNA.json',{encoding:'utf-8', flag:'r'})).DNAList;
+  
   for (let item = 0; item < max_items; item++) {
     let dnaValue = '*';
     let thisNFT = {};
@@ -77,6 +91,10 @@ const addLayers = (max_items) => {
                     fileURI: thisNFT.fileURI,
                     filename: fileList[fileindex],
                   });
+                  layerTraits.push({
+                    trait_type: layerNames[thisNFT.layer],
+                    value: thisNFT.rarity
+                  });
                   layerSelected = true;
                   dnaValue += parseInt(currLayer) + thisNFT.rarity.substring(0, 2) + fileindex + '*';
                 }
@@ -99,7 +117,7 @@ const addLayers = (max_items) => {
      if (allDNAIds.indexOf(dnaValue) == -1) {
        try {
       //Check to make sure that the file exists for this file location
-          allDNA.push({ itemId: item, dna: { ...itemDNA }, dnaId: dnaValue });
+          allDNA.push({ itemId: item, dna: { ...itemDNA }, dnaId: dnaValue, attributes: layerTraits });
           allDNAIds.push(dnaValue);
        } catch (err) {
          console.log(err);
@@ -119,6 +137,7 @@ module.exports = {
   height,
   editionCount,
   description,
+  traitDefinition,
   //baseImageUri,
   //editionSize,
   //startEditionFrom,
