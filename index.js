@@ -6,6 +6,7 @@ const {
   editionCount,
   description,
   traitDefinition,
+  owningWallet,
   addLayers
 } = require("./input/config.js");
 const console = require("console");
@@ -23,12 +24,12 @@ const MPMD_animation_url = 'image.png'; // URL to the animated image - default t
 const MPMD_external_url = 'image.png';  // URL to an external file - default to image.png for arweave
 const MPMD_uri_extension = '.png';     // THE URL - this needs to resolve to the image file in output folder
 const MPMD_creators = [{
-  address: `64afd2ZPL9VUnivd95VDv1FoonUGjnMDhW3YRUANFyRQ`,
+  address: owningWallet,
   verified: true,
   share: 100
 }];
 
-const MPMD_update_authority = `64afd2ZPL9VUnivd95VDv1FoonUGjnMDhW3YRUANFyRQ`;       //public key of the metadata owner  YOUR WALLET GOES HERE
+const MPMD_update_authority = owningWallet;       //public key of the metadata owner  YOUR WALLET GOES HERE
 // const MPMD_primary_sale_happened = ;  //
 
 

@@ -14,6 +14,7 @@
 
 const fs = require("fs");
 const editionCount = parseInt(process.argv[2]);
+const owningWallet = process.argv[3];
 const width = 800;
 const height = 800;
 const description = 'Owning one of these guarantees you a random drop of the minted collection, all more individual and more artistic than any others before them.  Learn more about the project by visiting the link below https://kodamanft.art/';
@@ -46,7 +47,7 @@ const traitDefinition = {
   "trait_type": "",
   "value": ""
 }
-const layerTraits = [];
+
 
 const addLayers = (max_items) => {
   const allDNA = [];
@@ -58,7 +59,7 @@ const addLayers = (max_items) => {
     let dnaValue = '*';
     let thisNFT = {};
     let itemDNA = [];
-
+    let layerTraits = [];
     //Get the random number for this layer
     for (let currLayer = 0; currLayer < max_layers; currLayer++) {
       // For each layer
@@ -135,15 +136,11 @@ const addLayers = (max_items) => {
 }
 
 module.exports = {
-  //layers,
   width,
   height,
   editionCount,
   description,
   traitDefinition,
-  //baseImageUri,
-  //editionSize,
-  //startEditionFrom,
-  //rarityWeights,
+  owningWallet,
   addLayers
 };
