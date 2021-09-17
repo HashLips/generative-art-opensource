@@ -8,12 +8,12 @@
  * Command Line Params
 * 
 *    editionCount argv[2]: Number of individual NFTs to create
-*    treasuryWallet argv[3]: Wallet that will own the NFT
+*
 */
 
 
 const fs = require("fs");
-const editionCount = process.argv[2];
+const editionCount = parseInt(process.argv[2]);
 const width = 800;
 const height = 800;
 const description = 'Owning one of these guarantees you a random drop of the minted collection, all more individual and more artistic than any others before them.  Learn more about the project by visiting the link below https://kodamanft.art/';
@@ -32,14 +32,14 @@ const rarity_types = {
 };
 
 const layer_names = {
-  1: "background",
-  2: "bodystyle1",
-  3: "bodystyle2",
-  4: "bodystyle3",
-  5: "bodystyle4",
-  6: "mouth",
-  7: "eyes",
-  8: "symbol"
+  0: "background",
+  1: "bodystyle1",
+  2: "bodystyle2",
+  3: "bodystyle3",
+  4: "bodystyle4",
+  5: "mouth",
+  6: "eyes",
+  7: "symbol"
 }
 
 const traitDefinition = {
@@ -91,12 +91,12 @@ const addLayers = (max_items) => {
                     fileURI: thisNFT.fileURI,
                     filename: fileList[fileindex],
                   });
-                  layerTraits.push({
-                    trait_type: layerNames[thisNFT.layer],
-                    value: thisNFT.rarity
-                  });
                   layerSelected = true;
                   dnaValue += parseInt(currLayer) + thisNFT.rarity.substring(0, 2) + fileindex + '*';
+                  layerTraits.push({
+                    trait_type: layer_names[currLayer],
+                    value: thisNFT.rarity.substring(3),
+                  });
                 }
               //TODO: compile stats
               //stats = compileStatistics(stats, currLayer, thisNFT.rarity.substring(0, 2), selectedRarityValue);
@@ -117,6 +117,9 @@ const addLayers = (max_items) => {
      if (allDNAIds.indexOf(dnaValue) == -1) {
        try {
       //Check to make sure that the file exists for this file location
+          layerTraits.push({trait_type: "DNA",
+                            value: dnaValue
+                          });
           allDNA.push({ itemId: item, dna: { ...itemDNA }, dnaId: dnaValue, attributes: layerTraits });
           allDNAIds.push(dnaValue);
        } catch (err) {

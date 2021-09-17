@@ -107,4 +107,4 @@ dist
 .dev-wallet.json
 
 #DO NOT UPLOAD NFTS TO GITHUB
-/outbox
+/output

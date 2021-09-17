@@ -14,14 +14,14 @@ const ctx = canvas.getContext("2d");
 
 // Descriptions of these can be viewed at
 // https://medium.com/metaplex/metaplex-metadata-standard-45af3d04b541
-const MPMD_name = `KODAMA${_edition}`;
+const MPMD_name_prefix = `KODAMA`;
 const MMPD_symbol = 'KODAMA';
 const MMPD_description = description; 
 const MPMD_seller_fee_basis_points = 0; //if you want royalties, put in a percentage value here.  500 = 5%
 const MPMD_image = 'image.png';         // URL to the image - default to image.png for arweave
 const MPMD_animation_url = 'image.png'; // URL to the animated image - default to image.png for arweave
 const MPMD_external_url = 'image.png';  // URL to an external file - default to image.png for arweave
-const MPMD_uri = `${_edition}.png`;     // THE URL - this needs to resolve to the image file in output folder
+const MPMD_uri_extension = '.png';     // THE URL - this needs to resolve to the image file in output folder
 const MPMD_creators = [{
   address: `64afd2ZPL9VUnivd95VDv1FoonUGjnMDhW3YRUANFyRQ`,
   verified: true,
@@ -54,20 +54,15 @@ const generateMetadata = (_dna, _edition) => {
   console.log(JSON.stringify(_dna));
   let dateTime = new Date(); 
   let tempMetadata = {
-    name: MPMD_name,
+    name: `${MPMD_name_prefix}${_edition}`,
     symbol: MMPD_symbol,
     description: MMPD_description,
     seller_fee_basis_points: MPMD_seller_fee_basis_points,
     image: MPMD_image,
     animation_url: MPMD_animation_url,
     external_url: MPMD_external_url,
-    uri: MPMD_uri,
-    attributes: [
-      {
-        "trait_type":  "DNA",
-        "value":  _dna.dnaId
-      }
-    ],
+    uri: `${_edition}${MPMD_uri_extension}`,
+    attributes: _dna.attributes,
     createdDate: dateTime,
     collection: {
       name: "Kodama",
@@ -81,13 +76,7 @@ const generateMetadata = (_dna, _edition) => {
         }
       ],
       category: "image",
-      creators: [
-        {  
-          address: wallet_addr,
-          verified: true,
-          share: 100
-        }
-      ]
+      creators: MPMD_creators
     }
   };
   fs.writeFileSync(
