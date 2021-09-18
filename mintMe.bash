@@ -69,7 +69,7 @@ then
   
   metaplex set_start_date --keypair ../walletbackups/$WALLET_NAME -d $(date --date"=0 day ago" +%y%m%d) --env devnet
   echo "Minting $1 editions now"
-  for x in {1..$(1 do metaplex mint_one_token --keypair ../walletbackups/$WALLET_NAME --env devnet json; done
+  for x in {1..$1}; do metaplex mint_one_token --keypair ../walletbackups/$WALLET_NAME --env devnet json; done
   echo "Your NFTs are ready!"
   exit 0
 else
