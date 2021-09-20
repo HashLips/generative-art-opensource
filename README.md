@@ -57,5 +57,8 @@ Use the existing `addLayers` calls as guidance for how to add layers. This can e
 It is possible to provide a percentage at which e.g. a rare item would contain a rare vs. common part in a given layer. This can be done via the `addRarityPercentForLayer` that can be found in the `config.js` as well. 
 This allows for more fine grained control over how much randomness there should be during the generation process, and allows a combination of common and rare parts.
 
+### Printing rarity data
+To see the percentages of each attribute across your collection, run `node rarityData.js`
+
 # Development suggestions
 - Preferably use VSCode with the prettifier plugin for a consistent coding style (or equivalent js formatting rules)

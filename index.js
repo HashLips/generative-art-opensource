@@ -62,6 +62,7 @@ const generateMetadata = (_dna, _edition, _attributesList) => {
 const getAttributeForElement = (_element) => {
   let selectedElement = _element.layer.selectedElement;
   let attribute = {
+    trait_type: _element.layer.name,
     name: selectedElement.name,
     rarity: selectedElement.rarity,
   };
@@ -94,6 +95,7 @@ const constructLayerToDna = (_dna = [], _layers = [], _rarity) => {
   let mappedDnaToLayers = _layers.map((layer, index) => {
     let selectedElement = layer.elements.find(element => element.id === _dna[index]);
     return {
+      name: layer.id,
       location: layer.location,
       position: layer.position,
       size: layer.size,
