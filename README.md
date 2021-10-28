@@ -23,6 +23,7 @@ Create generative art by using the canvas api and node js, feel free to contribu
 # Project Setup
 - install `node.js` on your local system (https://nodejs.org/en/)
 - clone the repository to your local system `git@github.com:HashLips/generative-art-opensource.git`
+- install libgif-dev and libjpeg-dev
 - run `yarn install` to install dependencies
 
 # How to use
