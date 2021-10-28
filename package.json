@@ -5,7 +5,7 @@
   "main": "index.js",
 
   "scripts": {
-    "run": "node index.js"
+    "generate": "node index.js"
   },
 
   "author": "Daniel Eugene Botha",
