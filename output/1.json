@@ -1,0 +1,20 @@
+{
+  "dna": "1011000100",
+  "name": "#1",
+  "description": "This is an NFT made by the coolest generative code.",
+  "image": "https://hashlips/nft/1.png",
+  "edition": 1,
+  "date": 1636326261415,
+  "attributes": [
+    { "trait_type": "Background", "value": "Orange" },
+    { "trait_type": "Suit", "value": "Regular" },
+    { "trait_type": "Shoulder", "value": "USA" },
+    { "trait_type": "Pin", "value": "LunaBluePin" },
+    { "trait_type": "Race", "value": "Skull" },
+    { "trait_type": "Facial hair", "value": "No facial hair" },
+    { "trait_type": "Mask", "value": "No mask" },
+    { "trait_type": "Hair", "value": "Pink" },
+    { "trait_type": "Accessories", "value": "No accessories" },
+    { "trait_type": "Headwear", "value": "Glass dome" }
+  ]
+}
