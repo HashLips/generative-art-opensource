@@ -3,10 +3,10 @@ const width = 1000;
 const height = 1000;
 const dir = __dirname;
 const description = "This is an NFT made by the coolest generative code.";
-const baseImageUri = "https://hashlips/nft";
+const baseImageUri = "https://raw.githubusercontent.com/shubhamdharpude26/generative-art-opensource/v4/output";
 const startEditionFrom = 1;
-const endEditionAt = 10;
-const editionSize = 10;
+const endEditionAt = 40;
+const editionSize = 40;
 const raceWeights = [
   {
     value: "skull",

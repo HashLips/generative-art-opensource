@@ -25,13 +25,13 @@ const saveImage = (_editionCount) => {
   );
 };
 
-const signImage = (_sig) => {
-  ctx.fillStyle = "#ffffff";
-  ctx.font = "bold 30pt Verdana";
-  ctx.textBaseline = "top";
-  ctx.textAlign = "left";
-  ctx.fillText(_sig, 40, 40);
-};
+// const signImage = (_sig) => {
+//   ctx.fillStyle = "#ffffff";
+//   ctx.font = "bold 30pt Verdana";
+//   ctx.textBaseline = "top";
+//   ctx.textAlign = "left";
+//   ctx.fillText(_sig, 40, 40);
+// };
 
 const genColor = () => {
   let hue = Math.floor(Math.random() * 360);
@@ -160,7 +160,7 @@ const startCreating = async () => {
         elementArray.forEach((element) => {
           drawElement(element);
         });
-        signImage(`#${editionCount}`);
+        // signImage(`#${editionCount}`);
         saveImage(editionCount);
         addMetadata(newDna, editionCount);
         saveMetaDataSingleFile(editionCount);
