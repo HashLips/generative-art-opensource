@@ -31,15 +31,9 @@ const signImage = (_sig) => {
   ctx.fillText(_sig, 40, 40);
 };
 
-// generate a random color hue
-const genColor = () => {
-  let hue = Math.floor(Math.random() * 360);
-  let pastel = `hsl(${hue}, 100%, 85%)`;
-  return pastel;
-};
-
+// generate a random color hue inside method for better readability
 const drawBackground = () => {
-  ctx.fillStyle = genColor();
+  ctx.fillStyle ='hsl(' + 360 * Math.random() + ', 100%, 85%)';
   ctx.fillRect(0, 0, width, height);
 };
 
