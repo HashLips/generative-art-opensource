@@ -132,10 +132,11 @@ const editionDnaPrefix = 0
 
 // create required weights
 // for each weight, call 'addRarity' with the id and from which to which element this rarity should be applied
+// changed value of orginial rarity weight to 6 instead of 5 to reduce repepititve outcomes of outcomes between rare and original
 let rarityWeights = [
   addRarity('super_rare', 1, 1),
   addRarity('rare', 2, 5),
-  addRarity('original', 5, 10)
+  addRarity('original', 6, 10)
 ];
 
 // create required layers
