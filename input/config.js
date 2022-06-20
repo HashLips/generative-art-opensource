@@ -10,21 +10,27 @@ const dir = __dirname;
 // @param _from - number in the edition to start this rarity from
 // @param _to - number in the edition to generate this rarity to
 // @return a rarity object used to dynamically generate the NFTs
-const addRarity = (_id, _from, _to) => {
+function addRarity(_id, _from, _to) {
   const _rarityWeight = {
-    value: _id,
+    _value: _id,
+    get value() {
+      return this._value;
+    },
+    set value(value) {
+      this._value = value;
+    },
     from: _from,
     to: _to,
     layerPercent: {}
   };
   return _rarityWeight;
-};
+}
 
 // get the name without last 4 characters -> slice .png from the name
-const cleanName = (_str) => {
+function cleanName(_str) {
   let name = _str.slice(0, -4);
   return name;
-};
+}
 
 // reads the filenames of a given folder and returns it with its name and path
 const getElements = (_path, _elementCount) => {
