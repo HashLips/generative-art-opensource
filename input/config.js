@@ -2,7 +2,7 @@
  * UTILITY FUNCTIONS
  * - scroll to BEGIN CONFIG to provide the config values
  *************************************************************/
-const fs = require("fs");
+import { readdirSync } from "fs";
 const dir = __dirname;
 
 // adds a rarity to the configuration. This is expected to correspond with a directory containing the rarity for each defined layer
@@ -10,26 +10,31 @@ const dir = __dirname;
 // @param _from - number in the edition to start this rarity from
 // @param _to - number in the edition to generate this rarity to
 // @return a rarity object used to dynamically generate the NFTs
-const addRarity = (_id, _from, _to) => {
+function addRarity(_id, _from, _to) {
   const _rarityWeight = {
-    value: _id,
+    _value: _id,
+    get value() {
+      return this._value;
+    },
+    set value(value) {
+      this._value = value;
+    },
     from: _from,
     to: _to,
     layerPercent: {}
   };
   return _rarityWeight;
-};
+}
 
 // get the name without last 4 characters -> slice .png from the name
-const cleanName = (_str) => {
+function cleanName(_str) {
   let name = _str.slice(0, -4);
   return name;
-};
+}
 
 // reads the filenames of a given folder and returns it with its name and path
 const getElements = (_path, _elementCount) => {
-  return fs
-    .readdirSync(_path)
+  return readdirSync(_path)
     .filter((item) => !/(^|\/)\.[^\/\.]/g.test(item))
     .map((i) => {
       return {
@@ -156,7 +161,7 @@ addRarityPercentForLayer('super_rare', 'ball', { 'super_rare': 33, 'rare': 33, '
 addRarityPercentForLayer('super_rare', 'eye color', { 'super_rare': 50, 'rare': 25, 'original': 25 });
 addRarityPercentForLayer('original', 'eye color', { 'super_rare': 50, 'rare': 25, 'original': 25 });
 
-module.exports = {
+export default {
   layers,
   width,
   height,
