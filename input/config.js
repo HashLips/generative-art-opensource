@@ -2,7 +2,7 @@
  * UTILITY FUNCTIONS
  * - scroll to BEGIN CONFIG to provide the config values
  *************************************************************/
-const fs = require("fs");
+import { readdirSync } from "fs";
 const dir = __dirname;
 
 // adds a rarity to the configuration. This is expected to correspond with a directory containing the rarity for each defined layer
@@ -34,8 +34,7 @@ function cleanName(_str) {
 
 // reads the filenames of a given folder and returns it with its name and path
 const getElements = (_path, _elementCount) => {
-  return fs
-    .readdirSync(_path)
+  return readdirSync(_path)
     .filter((item) => !/(^|\/)\.[^\/\.]/g.test(item))
     .map((i) => {
       return {
@@ -162,7 +161,7 @@ addRarityPercentForLayer('super_rare', 'ball', { 'super_rare': 33, 'rare': 33, '
 addRarityPercentForLayer('super_rare', 'eye color', { 'super_rare': 50, 'rare': 25, 'original': 25 });
 addRarityPercentForLayer('original', 'eye color', { 'super_rare': 50, 'rare': 25, 'original': 25 });
 
-module.exports = {
+export default {
   layers,
   width,
   height,
